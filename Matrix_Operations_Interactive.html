@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix Operations — An Interactive Guide</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+:root{
+  --navy:#344e8c;--navy-soft:#4c68a9;--ink:#1a1a1a;--paper:#ffffff;--paper-2:#f7f8fa;
+  --line:#d9dde6;--green-dark:#0f7a43;--green-mid:#12995a;--green-soft:#eef7f1;--green-line:#bfe3cd;
+  --blue-soft:#eef2fb;--blue-line:#c6d3ee;--accent:#c8641e;
+  --highlight-row:rgba(200,100,30,0.16);--highlight-col:rgba(69, 67, 230, 0.14);--highlight-cell:rgba(15,122,67,0.28);
+  --shadow:0 1px 3px rgba(33, 44, 78, 0.08),0 6px 20px rgba(20,30,60,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:#eceef2;line-height:1.55;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;display:flex;gap:28px;}
+nav.toc{position:sticky;top:0;align-self:flex-start;height:100vh;overflow-y:auto;width:250px;flex:0 0 250px;
+  padding:26px 10px 40px 0;font-family:'Segoe UI',system-ui,sans-serif;}
+nav.toc h1{font-size:15px;color:var(--navy);margin:0 0 4px;letter-spacing:.3px}
+nav.toc .sub{font-size:11.5px;color:#7a8296;margin-bottom:18px}
+nav.toc a{display:block;text-decoration:none;color:#4a5064;font-size:13px;padding:5px 10px;border-radius:6px;border-left:2px solid transparent;}
+nav.toc a.grp{color:var(--navy);font-weight:700;margin-top:14px;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+nav.toc a.sub-lnk{padding-left:20px;color:#5a6076}
+nav.toc a:hover{background:#e6ebf5;color:var(--navy)}
+nav.toc a.active{background:var(--blue-soft);border-left-color:var(--green-mid);color:var(--navy);font-weight:600}
+main{flex:1 1 auto;min-width:0;background:var(--paper);box-shadow:var(--shadow);margin:22px 0 60px;border-radius:10px;padding:0 0 40px;overflow:hidden}
+.hero{position:relative;background:linear-gradient(160deg,#1e2d4f,#33477e);color:#fff;padding:46px 46px 40px;}
+.hero h1{font-size:40px;margin:0 0 6px;letter-spacing:.5px}
+.hero p{margin:6px 0 0;color:#c7d1ea;font-size:16px;max-width:640px}
+.hero .tag{display:inline-block;margin-top:18px;font-family:'Segoe UI',sans-serif;font-size:12px;background:rgba(255,255,255,.13);padding:5px 12px;border-radius:20px;color:#dbe4f7}
+/* EN-ES switch */
+.lang-switch{position:absolute;top:22px;right:24px;display:flex;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:22px;padding:3px;font-family:'Segoe UI',sans-serif;}
+.lang-switch button{background:none;border:none;color:#c7d1ea;font-size:13px;font-weight:600;padding:6px 15px;border-radius:18px;cursor:pointer;transition:.15s}
+.lang-switch button.on{background:#fff;color:var(--navy)}
+section{padding:34px 46px 8px;border-top:1px solid var(--line)}
+section:first-of-type{border-top:none}
+.grp-head{font-family:'Segoe UI',sans-serif;font-size:12px;letter-spacing:1.5px;color:var(--green-mid);text-transform:uppercase;font-weight:700;margin:0 0 2px}
+h2.title{font-size:26px;color:var(--navy);margin:2px 0 4px}
+h2.title .eq{font-size:18px;color:#8a93a8;font-weight:400}
+.lead{color:#42485a;font-size:16px;margin:6px 0 22px;max-width:720px}
+.banner{border-radius:6px;overflow:hidden;margin:18px 0;border:1px solid var(--line)}
+.banner .bhead{font-family:'Segoe UI',sans-serif;font-weight:700;font-size:13.5px;color:#fff;padding:8px 16px;letter-spacing:.3px}
+.banner .bbody{padding:14px 16px;font-size:15.5px;background:var(--paper-2)}
+.banner.simple .bhead{background:var(--green-dark)}
+.banner.simple .bbody{background:#f4f6f9}
+.banner.analysis{border-color:var(--green-line)}
+.banner.analysis .bhead{background:var(--green-mid)}
+.banner.analysis .bbody{background:var(--green-soft)}
+.banner.plain .bbody{background:#fbfcfd;padding:16px}
+.reminder{font-size:14px;color:#5c637a;margin-top:8px}
+.lab{background:#fbfcfe;border:1px solid var(--blue-line);border-radius:10px;padding:18px 18px 20px;margin:20px 0;}
+.lab .lab-title{font-family:'Segoe UI',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--navy-soft);font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:8px}
+.lab .lab-title::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green-mid);box-shadow:0 0 0 3px var(--green-soft)}
+.lab-row{display:flex;flex-wrap:wrap;gap:26px;align-items:center;justify-content:flex-start}
+.lab-col{display:flex;flex-direction:column;align-items:center;gap:8px}
+.mlabel{font-family:'Segoe UI',sans-serif;font-size:12px;color:#6a7288;font-weight:600}
+.op{font-size:26px;color:#8a93a8;padding:0 2px;align-self:center}
+.matrix{display:inline-grid;gap:5px;padding:8px 12px;position:relative}
+.matrix::before,.matrix::after{content:"";position:absolute;top:2px;bottom:2px;width:8px;border:2px solid #48506a}
+.matrix::before{left:0;border-right:none;border-radius:3px 0 0 3px}
+.matrix::after{right:0;border-left:none;border-radius:0 3px 3px 0}
+.matrix .cell{width:56px;height:38px;text-align:center;font-family:'Segoe UI',sans-serif;font-size:15px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink);outline:none;transition:background .12s,box-shadow .12s;-moz-appearance:textfield}
+.matrix .cell::-webkit-outer-spin-button,.matrix .cell::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.matrix .cell:focus{box-shadow:0 0 0 2px var(--green-mid)}
+.matrix .cell.ro{background:var(--paper-2);border-color:#e3e7ee;color:#2a3350;font-weight:600}
+.matrix .cell.hl-row{background:var(--highlight-row)}
+.matrix .cell.hl-col{background:var(--highlight-col)}
+.matrix .cell.hl-both{background:var(--highlight-cell);box-shadow:0 0 0 2px var(--green-mid)}
+.matrix .cell.hl-out{box-shadow:0 0 0 2px var(--accent);background:rgba(200,100,30,.10)}
+.btn{font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;border:1px solid var(--navy);background:var(--navy);color:#fff;padding:8px 15px;border-radius:7px;cursor:pointer;transition:.15s}
+.btn:hover{background:var(--navy-soft)}
+.btn.ghost{background:#fff;color:var(--navy)}
+.btn.ghost:hover{background:var(--blue-soft)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.step-readout{font-family:'Segoe UI',sans-serif;font-size:14px;color:#39415a;min-height:22px;background:#fff;border:1px dashed var(--blue-line);border-radius:7px;padding:9px 13px;margin-top:12px}
+.step-readout b{color:var(--accent)}
+.note{font-size:13.5px;color:#6a7288;font-family:'Segoe UI',sans-serif;margin-top:8px}
+.warn{color:#b23b2e;font-weight:600}
+.dims{font-family:'Segoe UI',sans-serif;font-size:11.5px;color:#8891a5}
+.viz-wrap{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;margin-top:6px}
+canvas{background:#fff;border:1px solid var(--blue-line);border-radius:10px;touch-action:none}
+.viz-ctrl{font-family:'Segoe UI',sans-serif;font-size:13px;color:#39415a;min-width:200px}
+.viz-ctrl label{display:block;margin:12px 0 3px;font-weight:600;color:#4a5064}
+.viz-ctrl input[type=range]{width:100%}
+.readout-box{background:#fff;border:1px solid var(--blue-line);border-radius:8px;padding:10px 12px;margin-top:10px;font-size:13px}
+.readout-box .k{color:#6a7288}.readout-box .v{color:var(--navy);font-weight:700;font-variant-numeric:tabular-nums}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;font-family:'Segoe UI',sans-serif;margin-top:8px;color:#5a6076}
+.legend i{display:inline-block;width:22px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.quiz{background:linear-gradient(180deg,#fffdf8,#fff);border:1px solid #ecd9b8;border-radius:10px;padding:16px 18px;margin:20px 0}
+.quiz .q-tag{font-family:'Segoe UI',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#b07a1e;font-weight:700}
+.quiz .q-text{font-size:16px;margin:6px 0 12px;color:#2b2f3a}
+.quiz .opt{display:block;width:100%;text-align:left;font-family:'Segoe UI',sans-serif;font-size:14.5px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:7px 0;cursor:pointer;transition:.12s;color:#333}
+.quiz .opt:hover{border-color:#c9a24a;background:#fffdf6}
+.quiz .opt.correct{border-color:var(--green-mid);background:var(--green-soft);color:#0b6b3a;font-weight:600}
+.quiz .opt.wrong{border-color:#d98b7f;background:#fdf0ee;color:#a23a2c}
+.quiz .explain{font-family:'Segoe UI',sans-serif;font-size:14px;color:#39415a;margin-top:10px;display:none;background:#f4f6f9;border-left:3px solid var(--green-mid);padding:10px 13px;border-radius:0 6px 6px 0}
+.quiz .explain.show{display:block}
+.eqline{margin:16px 0;text-align:center;font-size:17px}
+.callout{background:var(--blue-soft);border-left:3px solid var(--navy-soft);padding:12px 15px;border-radius:0 8px 8px 0;font-size:14.5px;color:#33405f;margin:16px 0}
+.footer{padding:30px 46px;color:#8891a5;font-size:13px;font-family:'Segoe UI',sans-serif;border-top:1px solid var(--line)}
+.size-ctrl{display:flex;justify-content:flex-end;align-items:center;gap:4px;margin:-6px 0 12px}
+.size-ctrl .size-lbl{font-size:11px;color:#8891a5;margin-right:3px;font-family:'Segoe UI',sans-serif}
+.size-btn{border:1px solid var(--blue-line);background:#fff;color:var(--navy);font-size:12px;font-weight:600;padding:3px 9px;border-radius:6px;cursor:pointer;font-family:'Segoe UI',sans-serif}
+.size-btn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.size-btn:hover{background:var(--blue-soft)}
+.size-btn.on:hover{background:var(--navy-soft)}
+.matrix .cell.hl-couple{background:rgba(200,100,30,.20);box-shadow:inset 0 0 0 1.5px var(--accent);color:#a24a1e;font-weight:700}
+@media(max-width:900px){nav.toc{display:none}.hero{padding:34px 24px}.hero h1{font-size:30px}section{padding:28px 22px 6px}.footer{padding:24px 22px}.lang-switch{top:16px;right:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc" id="toc">
+  <h1 data-i18n="nav_title"></h1>
+  <div class="sub" data-i18n="nav_sub"></div>
+  <a href="#setup" data-i18n="nav_setup"></a>
+  <a class="grp" href="#s1" data-i18n="nav_p1"></a>
+  <a class="sub-lnk" href="#s11" data-i18n="nav_11"></a>
+  <a class="sub-lnk" href="#s12" data-i18n="nav_12"></a>
+  <a class="sub-lnk" href="#s13" data-i18n="nav_13"></a>
+  <a class="grp" href="#s2" data-i18n="nav_p2"></a>
+  <a class="sub-lnk" href="#s21" data-i18n="nav_21"></a>
+  <a class="sub-lnk" href="#s22" data-i18n="nav_22"></a>
+  <a class="grp" href="#s3" data-i18n="nav_p3"></a>
+  <a class="sub-lnk" href="#s31" data-i18n="nav_31"></a>
+  <a class="sub-lnk" href="#s32" data-i18n="nav_32"></a>
+  <a class="grp" href="#s4" data-i18n="nav_p4"></a>
+  <a class="sub-lnk" href="#s41" data-i18n="nav_41"></a>
+  <a class="sub-lnk" href="#s42" data-i18n="nav_42"></a>
+  <a class="sub-lnk" href="#s43" data-i18n="nav_43"></a>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="lang-switch">
+      <button id="lang-en" class="on" onclick="setLang('en')">EN</button>
+      <button id="lang-es" onclick="setLang('es')">ES</button>
+    </div>
+    <h1 data-i18n="hero_h1"></h1>
+    <p data-i18n="hero_p"></p>
+    <span class="tag" data-i18n="hero_tag"></span>
+  </div>
+
+  <!-- SETUP -->
+  <section id="setup">
+    <div class="grp-head" data-i18n="setup_grp"></div>
+    <h2 class="title" data-i18n="setup_title"></h2>
+    <p class="lead" data-i18n="setup_lead"></p>
+    <div class="banner plain"><div class="bbody">
+      <span data-i18n="setup_body1"></span>
+      <div class="eqline" id="setup-eq"></div>
+      <div class="note" data-i18n="setup_note"></div>
+    </div></div>
+    <div class="callout" data-i18n="setup_tip"></div>
+  </section>
+
+  <!-- P1 -->
+  <section id="s1" style="padding-bottom:0">
+    <div class="grp-head" data-i18n="s1_grp"></div>
+    <h2 class="title" data-i18n="s1_title"></h2>
+    <p class="lead" data-i18n="s1_lead"></p>
+  </section>
+
+  <!-- 1.1 -->
+  <section id="s11" style="border-top:none;padding-top:8px">
+    <h2 class="title" data-i18n="s11_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody" data-i18n="s11_simple"></div></div>
+    <div class="lab" id="lab-mul">
+      <div class="lab-title" data-i18n="s11_labtitle"></div>
+      <div class="lab-row">
+        <div class="lab-col"><span class="mlabel" id="mul-lblA" data-i18n="s11_A"></span><div class="matrix" id="mulA"></div></div>
+        <span class="op">×</span>
+        <div class="lab-col"><span class="mlabel" data-i18n="s11_B"></span><div class="matrix" id="mulB"></div></div>
+        <span class="op">=</span>
+        <div class="lab-col"><span class="mlabel" data-i18n="s11_C"></span><div class="matrix" id="mulC"></div></div>
+      </div>
+      <div class="step-readout" id="mul-read"></div>
+      <div class="btn-row">
+        <button class="btn" id="mul-step" data-i18n="s11_step"></button>
+        <button class="btn ghost" id="mul-auto" data-i18n="s11_auto"></button>
+        <button class="btn ghost" id="mul-reset" data-i18n="c_reset"></button>
+        <button class="btn ghost" id="mul-load" data-i18n="s11_loadbtn"></button>
+      </div>
+      <div class="note" data-i18n="s11_note"></div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s11_analysis"></div></div>
+    <div class="quiz" data-quiz="mul"></div>
+  </section>
+
+  <!-- 1.2 -->
+  <section id="s12">
+    <h2 class="title" data-i18n="s12_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody">
+      <span data-i18n="s12_simple"></span>
+      <div class="eqline"><span class="katex-inline">(A^T)_{ij}=a_{ji},\qquad \text{sym}\iff a_{ij}=a_{ji}</span></div>
+    </div></div>
+    <div class="lab" id="lab-tr">
+      <div class="lab-title" data-i18n="s12_labtitle"></div>
+      <div class="lab-row">
+        <div class="lab-col"><span class="mlabel">A</span><div class="matrix" id="trA"></div></div>
+        <span class="op">→</span>
+        <div class="lab-col"><span class="mlabel">Aᵀ</span><div class="matrix" id="trC"></div></div>
+      </div>
+      <div class="step-readout" id="tr-read"></div>
+      <div class="btn-row">
+        <button class="btn ghost" id="tr-sym" data-i18n="s12_symbtn"></button>
+        <button class="btn ghost" id="tr-load" data-i18n="s12_loadbtn"></button>
+        <span class="note" id="tr-symstate"></span>
+      </div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s12_analysis"></div></div>
+    <div class="quiz" data-quiz="tr"></div>
+  </section>
+
+  <!-- 1.3 -->
+  <section id="s13">
+    <h2 class="title" data-i18n="s13_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody">
+      <span data-i18n="s13_simple"></span>
+      <div class="eqline"><span class="katex-inline">\begin{bmatrix}a&b\\c&d\end{bmatrix}^{-1}=\frac{1}{ad-bc}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}</span></div>
+    </div></div>
+    <div class="lab" id="lab-inv">
+      <div class="lab-title" data-i18n="s13_labtitle"></div>
+      <div class="lab-row">
+        <div class="lab-col"><span class="mlabel">A</span><div class="matrix" id="invA"></div></div>
+        <span class="op">→</span>
+        <div class="lab-col"><span class="mlabel">A⁻¹</span><div class="matrix" id="invC"></div></div>
+        <span class="op">⇒</span>
+        <div class="lab-col"><span class="mlabel">A·A⁻¹</span><div class="matrix" id="invI"></div></div>
+      </div>
+      <div class="step-readout" id="inv-read"></div>
+      <div class="btn-row">
+        <button class="btn ghost" id="inv-load" data-i18n="s13_loadbtn"></button>
+        <button class="btn ghost" id="inv-sing" data-i18n="s13_singbtn"></button>
+      </div>
+      <div class="note" data-i18n="s13_note"></div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s13_analysis"></div></div>
+    <div class="quiz" data-quiz="inv"></div>
+  </section>
+
+  <!-- P2 -->
+  <section id="s2" style="padding-bottom:0">
+    <div class="grp-head" data-i18n="s2_grp"></div>
+    <h2 class="title" data-i18n="s2_title"></h2>
+    <p class="lead" data-i18n="s2_lead"></p>
+  </section>
+
+  <!-- 2.1 -->
+  <section id="s21" style="border-top:none;padding-top:8px">
+    <h2 class="title" data-i18n="s21_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody">
+      <span data-i18n="s21_simple"></span>
+      <div class="eqline"><span class="katex-inline">\det\begin{bmatrix}a&b\\c&d\end{bmatrix}=ad-bc</span></div>
+    </div></div>
+    <div class="lab" id="lab-det">
+      <div class="lab-title" data-i18n="s21_labtitle"></div>
+      <div class="viz-wrap">
+        <canvas id="detCanvas" width="360" height="360"></canvas>
+        <div class="viz-ctrl">
+          <div class="lab-col" style="align-items:flex-start"><span class="mlabel" data-i18n="s21_edit"></span><div class="matrix" id="detA"></div></div>
+          <div class="readout-box">
+            <div><span class="k">det A = ad − bc =</span> <span class="v" id="det-val">—</span></div>
+            <div><span class="k" data-i18n="s21_area"></span> <span class="v" id="det-area">—</span></div>
+            <div><span class="k" data-i18n="s21_invq"></span> <span class="v" id="det-inv">—</span></div>
+          </div>
+          <div class="legend"><span><i style="background:#c8c8c8"></i><span data-i18n="s21_leg1"></span></span><span><i style="background:#12995a"></i><span data-i18n="s21_leg2"></span></span></div>
+          <div class="note" data-i18n="s21_note"></div>
+        </div>
+      </div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s21_analysis"></div></div>
+    <div class="quiz" data-quiz="det"></div>
+  </section>
+
+  <!-- 2.2 -->
+  <section id="s22">
+    <h2 class="title" data-i18n="s22_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody" data-i18n="s22_simple"></div></div>
+    <div class="lab" id="lab-rank">
+      <div class="lab-title" data-i18n="s22_labtitle"></div>
+      <div class="lab-row">
+        <div class="lab-col"><span class="mlabel">A</span><div class="matrix" id="rankA"></div></div>
+        <div class="readout-box" style="min-width:230px">
+          <div><span class="k" data-i18n="s22_rank"></span> <span class="v" id="rank-val">—</span> &nbsp; <span class="k" data-i18n="s22_null"></span> <span class="v" id="null-val">—</span></div>
+          <div class="note" id="rank-msg" style="margin-top:6px"></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn ghost" id="rank-dep" data-i18n="s22_depbtn"></button>
+        <button class="btn ghost" id="rank-ind" data-i18n="s22_indbtn"></button>
+      </div>
+      <div class="note" data-i18n="s22_note"></div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s22_analysis"></div></div>
+    <div class="quiz" data-quiz="rank"></div>
+  </section>
+
+  <!-- P3 -->
+  <section id="s3" style="padding-bottom:0">
+    <div class="grp-head" data-i18n="s3_grp"></div>
+    <h2 class="title" data-i18n="s3_title"></h2>
+    <p class="lead" data-i18n="s3_lead"></p>
+  </section>
+
+  <!-- 3.1 -->
+  <section id="s31" style="border-top:none;padding-top:8px">
+    <h2 class="title" data-i18n="s31_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody">
+      <span data-i18n="s31_simple"></span>
+      <div class="eqline"><span class="katex-inline">Ax=\lambda x \iff \det(A-\lambda I)=0</span></div>
+    </div></div>
+    <div class="lab" id="lab-eig">
+      <div class="lab-title" data-i18n="s31_labtitle"></div>
+      <div class="viz-wrap">
+        <canvas id="eigCanvas" width="360" height="360"></canvas>
+        <div class="viz-ctrl">
+          <div class="lab-col" style="align-items:flex-start"><span class="mlabel" data-i18n="s31_sym"></span><div class="matrix" id="eigA"></div></div>
+          <div class="note" data-i18n="s31_note"></div>
+          <div class="readout-box">
+            <div><span class="k" data-i18n="s31_ang"></span> <span class="v" id="eig-ang">—</span></div>
+            <div><span class="k" data-i18n="s31_vals"></span> <span class="v" id="eig-vals">—</span></div>
+          </div>
+          <div class="legend"><span><i style="background:#2a5bd7"></i><span data-i18n="s31_leg1"></span></span><span><i style="background:#c8641e"></i><span data-i18n="s31_leg2"></span></span><span><i style="background:#12995a"></i><span data-i18n="s31_leg3"></span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s31_analysis"></div></div>
+    <div class="quiz" data-quiz="eig"></div>
+  </section>
+
+  <!-- 3.2 -->
+  <section id="s32">
+    <h2 class="title" data-i18n="s32_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody">
+      <span data-i18n="s32_simple"></span>
+      <div class="eqline"><span class="katex-inline">A=PDP^{-1},\qquad D=\mathrm{diag}(\lambda_1,\dots,\lambda_n)</span></div>
+    </div></div>
+    <div class="lab" id="lab-diag">
+      <div class="lab-title" data-i18n="s32_labtitle"></div>
+      <div class="viz-wrap">
+        <canvas id="diagCanvas" width="300" height="300"></canvas>
+        <div class="viz-ctrl" style="min-width:250px">
+          <label><span data-i18n="s32_rot"></span> θ = <span id="diag-ang">0</span>°</label>
+          <input type="range" id="diag-slider" min="0" max="90" value="0">
+          <div class="btn-row" style="margin-top:8px">
+            <button class="btn ghost" data-ang="0">0°</button>
+            <button class="btn ghost" data-ang="30">30°</button>
+            <button class="btn ghost" data-ang="45">45°</button>
+            <button class="btn ghost" data-ang="90">90°</button>
+          </div>
+          <div class="lab-col" style="align-items:flex-start;margin-top:12px"><span class="mlabel" data-i18n="s32_qbar"></span><div class="matrix" id="diagA"></div></div>
+          <div class="readout-box"><div><span class="k">Q̄₁₆ =</span> <span class="v" id="diag-q16">0</span> &nbsp; <span class="k">Q̄₂₆ =</span> <span class="v" id="diag-q26">0</span></div><div style="margin-top:5px" id="diag-state"></div></div>
+          <div class="legend"><span><i style="background:#12995a"></i><span data-i18n="s32_legfib"></span></span><span><i style="background:#c8641e"></i><span data-i18n="s32_legload"></span></span></div>
+        </div>
+      </div>
+      <div class="note" data-i18n="s32_note"></div>
+      <div class="banner plain" style="margin-top:14px"><div class="bbody" style="font-size:14.5px" data-i18n="s32_explain"></div></div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s32_analysis"></div></div>
+    <div class="quiz" data-quiz="diag"></div>
+  </section>
+
+  <!-- P4 -->
+  <section id="s4" style="padding-bottom:0">
+    <div class="grp-head" data-i18n="s4_grp"></div>
+    <h2 class="title" data-i18n="s4_title"></h2>
+    <p class="lead" data-i18n="s4_lead"></p>
+  </section>
+
+  <!-- 4.1 -->
+  <section id="s41" style="border-top:none;padding-top:8px">
+    <h2 class="title" data-i18n="s41_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody">
+      <span data-i18n="s41_simple"></span>
+      <div class="eqline"><span class="katex-inline">A=LU</span></div>
+    </div></div>
+    <div class="lab" id="lab-lu">
+      <div class="lab-title" data-i18n="s41_labtitle"></div>
+      <div class="lab-row">
+        <div class="lab-col"><span class="mlabel">A</span><div class="matrix" id="luA"></div></div>
+        <span class="op">=</span>
+        <div class="lab-col"><span class="mlabel" data-i18n="s41_L"></span><div class="matrix" id="luL"></div></div>
+        <span class="op">×</span>
+        <div class="lab-col"><span class="mlabel" data-i18n="s41_U"></span><div class="matrix" id="luU"></div></div>
+      </div>
+      <div class="step-readout" id="lu-read"></div>
+      <div class="btn-row"><button class="btn ghost" id="lu-load" data-i18n="s41_loadbtn"></button></div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s41_analysis"></div></div>
+    <div class="quiz" data-quiz="lu"></div>
+  </section>
+
+  <!-- 4.2 -->
+  <section id="s42">
+    <h2 class="title" data-i18n="s42_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody">
+      <span data-i18n="s42_simple"></span>
+      <div class="eqline"><span class="katex-inline">A=QR,\qquad Q^TQ=I</span></div>
+    </div></div>
+    <div class="lab" id="lab-qr">
+      <div class="lab-title" data-i18n="s42_labtitle"></div>
+      <div class="lab-row">
+        <div class="lab-col"><span class="mlabel">A</span><div class="matrix" id="qrA"></div></div>
+        <span class="op">=</span>
+        <div class="lab-col"><span class="mlabel" data-i18n="s42_Q"></span><div class="matrix" id="qrQ"></div></div>
+        <span class="op">×</span>
+        <div class="lab-col"><span class="mlabel" data-i18n="s42_R"></span><div class="matrix" id="qrR"></div></div>
+      </div>
+      <div class="readout-box" style="max-width:460px"><span class="k" data-i18n="s42_check"></span> <span class="v" id="qr-check">—</span> &nbsp;<span class="k" data-i18n="s42_checknote"></span></div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s42_analysis"></div></div>
+    <div class="quiz" data-quiz="qr"></div>
+  </section>
+
+  <!-- 4.3 -->
+  <section id="s43">
+    <h2 class="title" data-i18n="s43_title"></h2>
+    <div class="banner simple"><div class="bhead" data-i18n="c_simple"></div><div class="bbody">
+      <span data-i18n="s43_simple"></span>
+      <div class="eqline"><span class="katex-inline">A=U\Sigma V^T,\qquad \sigma_1\ge\sigma_2\ge\cdots\ge0</span></div>
+    </div></div>
+    <div class="lab" id="lab-svd">
+      <div class="lab-title" data-i18n="s43_labtitle"></div>
+      <div class="viz-wrap">
+        <canvas id="svdCanvas" width="360" height="360"></canvas>
+        <div class="viz-ctrl">
+          <div class="lab-col" style="align-items:flex-start"><span class="mlabel">A</span><div class="matrix" id="svdA"></div></div>
+          <div class="readout-box">
+            <div><span class="k" data-i18n="s43_s1"></span> <span class="v" id="svd-s1">—</span></div>
+            <div><span class="k" data-i18n="s43_s2"></span> <span class="v" id="svd-s2">—</span></div>
+            <div><span class="k">σ₁/σ₂ =</span> <span class="v" id="svd-cond">—</span></div>
+          </div>
+          <div class="btn-row"><button class="btn" id="svd-step" data-i18n="s43_step"></button><button class="btn ghost" id="svd-reset" data-i18n="c_reset"></button></div>
+          <div class="step-readout" id="svd-stage"></div>
+          <div class="legend"><span><i style="background:#12995a"></i>v₁ / σ₁u₁</span><span><i style="background:#2a5bd7"></i>v₂ / σ₂u₂</span></div>
+          <div class="note" data-i18n="s43_note"></div>
+        </div>
+      </div>
+    </div>
+    <div class="banner analysis"><div class="bhead" data-i18n="c_analysis"></div><div class="bbody" data-i18n="s43_analysis"></div></div>
+    <div class="quiz" data-quiz="svd"></div>
+  </section>
+
+  <div class="footer" data-i18n="footer"></div>
+</main>
+</div>
+
+<script>
+/* i18n dictionary pulled from latex pdf/code*/
+const DICT={
+ en:{
+  nav_title:"Matrix Operations",nav_sub:"An interactive intuition guide",
+  nav_setup:"Guide setup: the running ply",nav_p1:"1 · Arithmetic & Transforms",
+  nav_11:"1.1 Multiplication",nav_12:"1.2 Transpose",nav_13:"1.3 Inversion",
+  nav_p2:"2 · Solvability",nav_21:"2.1 Determinant",nav_22:"2.2 Rank & Nullity",
+  nav_p3:"3 · Spectral / Modal",nav_31:"3.1 Eigen-analysis",nav_32:"3.2 Diagonalization",
+  nav_p4:"4 · Factorizations",nav_41:"4.1 LU",nav_42:"4.2 QR",nav_43:"4.3 SVD",
+  hero_h1:"Matrix Operations",
+  hero_tag:"Intuition → Interaction → Composites payoff",
+  setup_grp:"Guide setup",setup_title:"Notation & the running ply",
+  setup_lead:"Classical Laminated Plate Theory (CLPT) uses contracted notation: subscript 1 points along the fibers, 2 across them, and 6 is the in-plane shear channel. Stress and strain become 3-entry column vectors, and stiffness/compliance become 3×3 matrices.",
+  setup_body1:"<b>Example #1 — a 0° carbon/epoxy ply.</b> Every section reuses this same reduced-stiffness matrix [Q] so the numbers stay tied together:",
+  setup_note:"From E₁=17.10, E₂=1.28, G₁₂=0.875 Msi and ν₁₂=0.34, via Q₁₁=E₁/(1−ν₁₂ν₂₁). Units: Msi (million psi).",
+  setup_tip:"Tip: every blue Lab box below is live — type new numbers into any white cell and the results, highlights, and pictures update instantly. Green cells are computed outputs.",
+  s1_grp:"Part 1",s1_title:"Fundamental Arithmetic & Transformations",
+  s1_lead:"A matrix is a machine that acts on vectors. Before any physics, get a feel for what multiplication, transpose, and inverse do to space.",
+  c_simple:"In simple words",c_analysis:"In your stiffness analysis",c_reset:"Reset",c_size:"size",
+  s11_title:"1.1 Matrix Multiplication",
+  s11_simple:"To multiply two matrices, slide each <em>row</em> of the first across each <em>column</em> of the second, multiply the paired numbers, and add them up — that single sum is one entry of the answer. <b>Inner dimensions must match.</b><div class='reminder'><b>Index reminder:</b> in Xᵢⱼ, subscript i moves down (rows), j moves across (columns).</div>",
+  s11_labtitle:"Live lab — step through a multiply",
+  s11_A:"A (rows) 2×2",s11_B:"B (cols) 2×2",s11_C:"A·B result",
+  s11_step:"Step ▶",s11_auto:"Auto-play",s11_pause:"Pause",
+  s11_loadbtn:"Load the ply: [Q]·[ε]",
+  s11_note:"Order matters — AB ≠ BA in general. Try swapping the two matrices and watch the result change.",
+  s11_read0:"Press <b>Step</b> to walk one row·column dot product at a time.",
+  s11_readTpl:"<b>C[{i},{j}]</b> = row {i} · col {j} = {terms} = <b>{sum}</b>",
+  s11_done:"Done — every entry is a row·column dot product. Edit any number to recompute.",
+  s11_loaded:"Loaded <b>[σ]=[Q][ε]</b> with 0.1% fiber strain. Step through: entry 2 is 0.44 — transverse stress from the Q₁₂ coupling.",
+  s11_analysis:"Every stress prediction is a matrix multiply: [σ]=[Q][ε] for a ply, [σ]=[A*][ε] for a laminate, [N]=[A][ε] for running load. Apply 0.1% fiber strain [ε]=(0.001,0,0)ᵀ and pulling only along the fibers <em>still</em> produces a small transverse stress (0.44 ksi) — that coupling is the off-diagonal Q₁₂ at work. Because AB≠BA, rotating a ply then loading it differs from loading then rotating.",
+  s12_title:"1.2 Matrix Transpose (Aᵀ)",
+  s12_simple:"The transpose flips a matrix across its main diagonal: the entry at row i, column j swaps to row j, column i. A matrix that equals its own transpose (A=Aᵀ) is <em>symmetric</em>.",
+  s12_labtitle:"Live lab — flip across the diagonal",
+  s12_symbtn:"Make it symmetric",s12_loadbtn:"Load the ply: [S]",
+  s12_read0:"Hover a cell of <b>A</b> to see where it lands in <b>Aᵀ</b>. Diagonal cells stay put.",
+  s12_readDiag:"<b>a[{i},{j}]</b> is on the diagonal — it stays fixed.",
+  s12_readSwap:"<b>a[{i},{j}]</b> = {val} swaps to position <b>[{j},{i}]</b> in Aᵀ.",
+  s12_sym:"✓ symmetric — A equals Aᵀ",s12_notsym:"not symmetric yet",
+  s12_loaded:"Loaded compliance <b>[S]</b> — already symmetric, so [S]ᵀ = [S]. Off-diagonals S₁₂ = S₂₁ = −0.0199.",
+  s12_analysis:"The compliance matrix [S]=[Q]⁻¹ is symmetric, and that symmetry is exactly the reciprocity relation ν₂₁/E₂ = ν₁₂/E₁ (the off-diagonal equality S₁₂=S₂₁). It is why you can get ν₂₁ from ν₁₂, E₁, E₂ — you only need the upper-triangle values S₁₁, S₁₂, S₂₂, S₆₆.",
+  s13_title:"1.3 Matrix Inversion (A⁻¹)",
+  s13_simple:"The inverse is the matrix version of \"dividing by itself to get 1.\" It undoes what A does, so it converts stress-to-strain back into strain-to-stress. Multiplying a matrix by its inverse gives the <em>identity</em> I — ones on the diagonal, zeros elsewhere.",
+  s13_labtitle:"Live lab — invert and verify",
+  s13_loadbtn:"Load the ply: invert [S] → [Q]",s13_singbtn:"Make it singular (det = 0)",
+  s13_note:"Watch the right-hand product snap to the identity — unless the determinant is zero, in which case no inverse exists.",
+  s13_exists:"det A = <b>{d}</b> ≠ 0, so A⁻¹ exists. The product A·A⁻¹ on the right is the identity <b>I</b>.",
+  s13_singular:"det A = <b>0</b> → <span class='warn'>no inverse exists</span>. The matrix squashes space flat.",
+  s13_loaded:"Inverting compliance <b>[S]⁻¹ = [Q]</b> — the guide's key line. Stiffness and compliance are inverses of each other.",
+  s13_analysis:"The inverse is the connector between \"how stiff\" and \"how much it strains.\" [Q]=[S]⁻¹ converts compliance back to stiffness; the shear channel even inverts on its own, Q₆₆=1/S₆₆=1/1.143=0.875. The same relationship scales up: [a]=[A]⁻¹ turns laminate stiffness into compliance, and the engineering constants come out of that inverse (Eₓ=1/a*₁₁).",
+  s2_grp:"Part 2",s2_title:"System Characteristics & Solvability",
+  s2_lead:"Two single-number health checks: does the matrix distort space to nothing (determinant), and how many independent directions does it actually constrain (rank)?",
+  s21_title:"2.1 Determinant (det A)",
+  s21_simple:"The determinant is one number measuring how much a transformation scales area (2D) or volume (3D). If it is <b>zero</b>, the matrix squashes space flat and <em>cannot be inverted</em>.",
+  s21_labtitle:"Live lab — det as area scaling",
+  s21_edit:"A (edit the cells)",s21_area:"unit square area →",s21_invq:"invertible?",
+  s21_leg1:"original unit square",s21_leg2:"transformed (area = |det|)",
+  s21_note:"Change the columns until the green shape collapses to a line — that is det = 0.",
+  s21_yes:"yes",s21_no:"NO — det = 0",
+  s21_analysis:"For the normal block of the ply, det = 17.249·1.291 − 0.439² = 22.08 ≠ 0, so [Q] is invertible and the ply has a well-defined stress–strain response. A zero determinant would mean a \"free\" direction offering no resistance — a mechanism. Checking the determinant is a fast way to know a laminate is healthy <em>before</em> you trust its inverse.",
+  s22_title:"2.2 Rank & Nullity",
+  s22_simple:"<b>Rank</b> counts how many independent directions a matrix genuinely resists. The <b>null space</b> is the set of inputs it maps to zero — directions where the material offers no push-back. They always add up: rank + nullity = n.",
+  s22_labtitle:"Live lab — independent rows",
+  s22_rank:"rank =",s22_null:"nullity =",
+  s22_depbtn:"Make row 2 = 2 × row 1",s22_indbtn:"Make rows independent",
+  s22_note:"When one row is a multiple of another, the matrix loses a rank — a strain direction that produces zero stress appears (nullity 1).",
+  s22_def:"<span class='warn'>Rank-deficient.</span> There is a strain direction giving zero stress — the null space is non-empty.",
+  s22_full:"Full rank — every direction is resisted independently (nullity 0). This is a healthy laminate.",
+  s22_analysis:"The ply [Q] has full rank 3: it resists fiber stretch, transverse stretch, and shear independently, so its null space is empty (nullity 0). Full rank is exactly what you want — a laminate that constrains every in-plane deformation. It also explains the \"balanced laminate\" result: when Q₁₆=Q₂₆=0, the shear row/column is independent of the normal ones, keeping the matrix full-rank and cleanly separated.",
+  s3_grp:"Part 3",s3_title:"Spectral Decomposition & Modal Analysis",
+  s3_lead:"Find the directions a matrix does not rotate — only stretches. Those special axes are the natural language of stiffness, principal stresses, and vibration modes.",
+  s31_title:"3.1 Eigenvalues & Eigenvectors (Ax = λx)",
+  s31_simple:"An <b>eigenvector</b> is a special direction the matrix does not rotate — it only stretches it. The stretch factor is the <b>eigenvalue</b> λ. Find them from det(A − λI) = 0.",
+  s31_labtitle:"Live lab — hunt for the fixed directions",
+  s31_sym:"Symmetric A",
+  s31_note:"Drag the blue vector around the circle. When its image (orange) lines up with it — no rotation — you have found an eigenvector.",
+  s31_ang:"angle between x and Ax:",s31_vals:"eigenvalues:",
+  s31_leg1:"your direction x",s31_leg2:"image Ax",s31_leg3:"eigen-directions",
+  s31_found:"  ✓ eigenvector!",
+  s31_analysis:"The eigenvalues of the ply's normal block (trace 18.54, det 22.08) come out to λ₁ ≈ 17.26 and λ₂ ≈ 1.28 Msi — essentially E₁ and E₂, with eigenvectors pointing along and across the fibers. The math recovers the physical axes. The same idea powers principal stresses/strains (Mohr's circle) and, more broadly, natural frequencies and buckling modes.",
+  s32_title:"3.2 Matrix Diagonalization (A = PDP⁻¹)",
+  s32_simple:"Diagonalization rewrites a matrix using its eigenvectors (P) and eigenvalues (D) so that <em>coupled</em> behavior becomes a set of independent, one-at-a-time behaviors.",
+  s32_labtitle:"Live lab — coupling appears and disappears with angle",
+  s32_rot:"Ply rotation",s32_qbar:"Transformed stiffness [Q̄]",
+  s32_note:"On-axis (0° or 90°) the off-diagonal shear-coupling terms Q̄₁₆, Q̄₂₆ are zero. Rotate off-axis and they fill in — stretch and shear become coupled.",
+  s32_decoupled:"decoupled: stretching induces no shear",s32_coupled:"coupled: stretching now induces shear",
+  s32_legfib:"fiber direction",s32_legload:"x-load",
+  s32_explain:"<b>Why the numbers move.</b> You are looking at the <em>same physical ply</em> from axes rotated by θ. The decomposition A = PDP⁻¹ splits that into P (the rotation onto the fiber axes) and D — the fixed principal stiffnesses (17.26 / 1.28 / 0.875) that never change. At θ = 0° the axes line up with the fibers, so the highlighted shear-coupling cells Q̄₁₆ and Q̄₂₆ are exactly zero and the matrix is block-diagonal. As you rotate, \"stiff along the fibers\" now points partly into <em>both</em> x and y, so the stiffness redistributes across the cells and the highlighted coupling terms grow — largest near 45° — then return to zero at 90°. Diagonalizing is the reverse: rotate back to the axes where D lives and the coupling vanishes.",
+  s32_analysis:"This is precisely why ply angle matters. An on-axis (0°) ply is already block-diagonal — Q₁₆=Q₂₆=0, shear decoupled from the two normal channels. Rotate off-axis and Q̄₁₆, Q̄₂₆ re-couple extension and shear. Diagonalizing (or choosing 0°/90° and balanced ±45° pairs) is how you decouple a laminate's response.",
+  s4_grp:"Part 4",s4_title:"Advanced Matrix Factorizations",
+  s4_lead:"How solvers actually crunch Ax=b, fit noisy test data, and measure how lopsided a stiffness matrix is — three factorizations behind the scenes.",
+  s41_title:"4.1 LU Decomposition (A = LU)",
+  s41_simple:"LU splits a matrix into a <b>L</b>ower-triangular times an <b>U</b>pper-triangular matrix. Triangular systems solve instantly by forward/back substitution — so this is how solvers actually crunch Ax=b: factor once, then cheap substitution for every load case.",
+  s41_labtitle:"Live lab — factor into L · U",
+  s41_L:"L (lower)",s41_U:"U (upper)",s41_loadbtn:"Load the laminate block [A*]",
+  s41_read0:"L holds the elimination multipliers (1s on its diagonal); U is what's left after elimination. Multiply them back to recover A.",
+  s41_pivot:"<span class='warn'>Needs a pivot swap</span> — this simple factorization hit a zero pivot. Try other numbers.",
+  s41_loaded:"Laminate stiffness <b>[A*]</b>: multiplier L₂₁ = 0.303 matches the guide. Factor once, back-substitute for every load case.",
+  s41_analysis:"To find the strains a laminate feels under running loads you solve [N]=[A][ε]. Rather than form [A]⁻¹, a solver factors the laminate stiffness once and does cheap substitution for every load case — that is LU (or Cholesky, its symmetric cousin) working under the hood. It is what makes the whole CLPT spreadsheet fast.",
+  s42_title:"4.2 QR Decomposition (A = QR)",
+  s42_simple:"QR factors a matrix into an <b>orthogonal</b> Q (perpendicular unit columns — rotations/reflections only, no distortion) times an upper-triangular R. Because Q preserves lengths, it is numerically very stable.",
+  s42_labtitle:"Live lab — orthonormal columns of Q",
+  s42_Q:"Q (orthonormal)",s42_R:"R (upper)",
+  s42_check:"check QᵀQ = I ?",s42_checknote:"columns of Q are unit-length and perpendicular.",
+  s42_ok:"✓ QᵀQ = I",
+  s42_analysis:"Suppose you measure a ply's stress–strain data to extract E₁, E₂, ν₁₂, G₁₂ — far more data points than unknowns, an over-determined system. QR gives the stable least-squares fit that best recovers those constants from noisy coupon tests, without the error blow-up of forming AᵀA directly. It is also the engine behind the QR algorithm that computes the eigenvalues (principal stiffnesses) above.",
+  s43_title:"4.3 Singular Value Decomposition (A = UΣVᵀ)",
+  s43_simple:"SVD works on <em>any</em> matrix: it writes A as a rotation (Vᵀ), a stretch by the <b>singular values</b> in Σ, then another rotation (U). Big singular values carry the dominant behavior; tiny ones are usually noise.",
+  s43_labtitle:"Live lab — rotate · stretch · rotate",
+  s43_s1:"σ₁ (stiffest dir) =",s43_s2:"σ₂ (softest dir) =",
+  s43_note:"The unit circle maps to an ellipse; its two half-axes are the singular values. The more lopsided the ellipse, the worse the conditioning.",
+  s43_step:"Step through Vᵀ · Σ · U ▶",
+  s43_stage0:"<b>Stage 0 — input space.</b> The unit circle, with the two right-singular directions v₁ (green) and v₂ (blue). SVD says: <em>if</em> you feed A these two special perpendicular directions, the output stays perpendicular. Press Step.",
+  s43_stage1:"<b>Stage 1 · Vᵀ (rotate).</b> Vᵀ spins v₁, v₂ onto the coordinate axes. It is a pure rotation — the circle is unchanged, nothing is stretched yet.",
+  s43_stage2:"<b>Stage 2 · Σ (stretch).</b> Σ scales the axes by the singular values σ₁, σ₂. The circle becomes an axis-aligned ellipse — this stage is where <em>all</em> the stretching happens.",
+  s43_stage3:"<b>Stage 3 · U (rotate).</b> U spins the ellipse into its final orientation. The result is exactly A · (unit circle); its principal axes are σ₁u₁ and σ₂u₂. That is rotate → stretch → rotate.",
+  s43_analysis:"The singular values of the laminate stiffness [A*] measure its stiffest and softest in-plane directions — about σmax ≈ 9.3 and σmin ≈ 2.6 Msi for the running block, a ratio of ≈3.6 that is the laminate's anisotropy / conditioning. SVD quantifies how far a layup is from quasi-isotropic and flags an ill-conditioned stiffness matrix before an inverse goes bad. It is the standard tool for compressing and de-noising large experimental data sets.",
+  footer:"Built from the Matrix Operations composites guide · every operation shown intuition-first, then applied to a 0° carbon/epoxy ply. Numbers reproduce the guide's running [Q] example. Interact freely — nothing is saved.",
+  qtag:"Self-check · predict first"
+ },
+ es:{
+  nav_title:"Operaciones con Matrices",nav_sub:"Guía interactiva de intuición",
+  nav_setup:"Preparación: la lámina de referencia",nav_p1:"1 · Aritmética y Transformaciones",
+  nav_11:"1.1 Multiplicación",nav_12:"1.2 Transpuesta",nav_13:"1.3 Inversión",
+  nav_p2:"2 · Resolubilidad",nav_21:"2.1 Determinante",nav_22:"2.2 Rango y Nulidad",
+  nav_p3:"3 · Espectral / Modal",nav_31:"3.1 Análisis propio",nav_32:"3.2 Diagonalización",
+  nav_p4:"4 · Factorizaciones",nav_41:"4.1 LU",nav_42:"4.2 QR",nav_43:"4.3 SVD",
+  hero_h1:"Operaciones con Matrices",
+  hero_tag:"Intuición → Interacción → Aplicación en composites",
+  setup_grp:"Preparación",setup_title:"Notación y la lámina de referencia",
+  setup_lead:"La Teoría Clásica de Laminados (CLPT) usa notación contraída: el subíndice 1 apunta a lo largo de las fibras, el 2 a través de ellas, y el 6 es el canal de cortante en el plano. El esfuerzo y la deformación se vuelven vectores columna de 3 entradas, y la rigidez/flexibilidad se vuelven matrices 3×3.",
+  setup_body1:"<b>El ejemplo de referencia — una lámina de carbono/epoxi a 0°.</b> Cada sección reutiliza esta misma matriz de rigidez reducida [Q] para que los números queden ligados entre sí:",
+  setup_note:"A partir de E₁=17.10, E₂=1.28, G₁₂=0.875 Msi y ν₁₂=0.34, mediante Q₁₁=E₁/(1−ν₁₂ν₂₁). Unidades: Msi (millón de psi).",
+  setup_tip:"Consejo: cada caja azul de Laboratorio es interactiva — escribe nuevos números en cualquier celda blanca y los resultados, resaltados e imágenes se actualizan al instante. Las celdas verdes son salidas calculadas.",
+  s1_grp:"Parte 1",s1_title:"Aritmética Fundamental y Transformaciones",
+  s1_lead:"Una matriz es una máquina que actúa sobre vectores. Antes de la física, siente qué le hacen al espacio la multiplicación, la transpuesta y la inversa.",
+  c_simple:"En palabras simples",c_analysis:"En tu análisis de rigidez",c_reset:"Reiniciar",c_size:"tamaño",
+  s11_title:"1.1 Multiplicación de Matrices",
+  s11_simple:"Para multiplicar dos matrices, desliza cada <em>fila</em> de la primera sobre cada <em>columna</em> de la segunda, multiplica los números emparejados y súmalos — esa suma es una entrada del resultado. <b>Las dimensiones internas deben coincidir.</b><div class='reminder'><b>Recordatorio de índices:</b> en Xᵢⱼ, el subíndice i baja (filas) y j avanza (columnas).</div>",
+  s11_labtitle:"Laboratorio — recorre una multiplicación",
+  s11_A:"A (filas) 2×2",s11_B:"B (cols) 2×2",s11_C:"resultado A·B",
+  s11_step:"Paso ▶",s11_auto:"Reproducir",s11_pause:"Pausar",
+  s11_loadbtn:"Cargar la lámina: [Q]·[ε]",
+  s11_note:"El orden importa — AB ≠ BA en general. Intercambia las dos matrices y observa cómo cambia el resultado.",
+  s11_read0:"Pulsa <b>Paso</b> para recorrer un producto punto fila·columna a la vez.",
+  s11_readTpl:"<b>C[{i},{j}]</b> = fila {i} · col {j} = {terms} = <b>{sum}</b>",
+  s11_done:"Listo — cada entrada es un producto punto fila·columna. Edita cualquier número para recalcular.",
+  s11_loaded:"Cargado <b>[σ]=[Q][ε]</b> con 0.1% de deformación en fibra. Recórrelo: la entrada 2 es 0.44 — esfuerzo transversal por el acoplamiento Q₁₂.",
+  s11_analysis:"Cada predicción de esfuerzo es una multiplicación de matrices: [σ]=[Q][ε] para una lámina, [σ]=[A*][ε] para un laminado, [N]=[A][ε] para el flujo de carga. Aplica 0.1% de deformación en fibra [ε]=(0.001,0,0)ᵀ: tirar puramente a lo largo de las fibras <em>aún así</em> produce un pequeño esfuerzo transversal (0.44 ksi) — ese acoplamiento es el término fuera de la diagonal Q₁₂ en acción. Como AB≠BA, rotar una lámina y luego cargarla difiere de cargar y luego rotar.",
+  s12_title:"1.2 Transpuesta (Aᵀ)",
+  s12_simple:"La transpuesta refleja la matriz sobre su diagonal principal: la entrada en fila i, columna j pasa a fila j, columna i. Una matriz igual a su propia transpuesta (A=Aᵀ) es <em>simétrica</em>.",
+  s12_labtitle:"Laboratorio — refleja sobre la diagonal",
+  s12_symbtn:"Hacerla simétrica",s12_loadbtn:"Cargar la lámina: [S]",
+  s12_read0:"Pasa el cursor por una celda de <b>A</b> para ver dónde cae en <b>Aᵀ</b>. Las celdas de la diagonal no se mueven.",
+  s12_readDiag:"<b>a[{i},{j}]</b> está en la diagonal — se queda fija.",
+  s12_readSwap:"<b>a[{i},{j}]</b> = {val} se mueve a la posición <b>[{j},{i}]</b> en Aᵀ.",
+  s12_sym:"✓ simétrica — A es igual a Aᵀ",s12_notsym:"aún no es simétrica",
+  s12_loaded:"Cargada la flexibilidad <b>[S]</b> — ya es simétrica, así que [S]ᵀ = [S]. Fuera de la diagonal S₁₂ = S₂₁ = −0.0199.",
+  s12_analysis:"La matriz de flexibilidad [S]=[Q]⁻¹ es simétrica, y esa simetría es exactamente la relación de reciprocidad ν₂₁/E₂ = ν₁₂/E₁ (la igualdad fuera de la diagonal S₁₂=S₂₁). Por eso puedes recuperar ν₂₁ a partir de ν₁₂, E₁, E₂ — solo necesitas los valores del triángulo superior S₁₁, S₁₂, S₂₂, S₆₆.",
+  s13_title:"1.3 Inversión de Matrices (A⁻¹)",
+  s13_simple:"La inversa es la versión matricial de \"dividir algo por sí mismo para obtener 1.\" Deshace lo que hace A, así que convierte esfuerzo-a-deformación de vuelta en deformación-a-esfuerzo. Multiplicar una matriz por su inversa da la <em>identidad</em> I — unos en la diagonal, ceros en el resto.",
+  s13_labtitle:"Laboratorio — invierte y verifica",
+  s13_loadbtn:"Cargar la lámina: invertir [S] → [Q]",s13_singbtn:"Hacerla singular (det = 0)",
+  s13_note:"Observa cómo el producto de la derecha salta a la identidad — a menos que el determinante sea cero, en cuyo caso no existe inversa.",
+  s13_exists:"det A = <b>{d}</b> ≠ 0, así que A⁻¹ existe. El producto A·A⁻¹ de la derecha es la identidad <b>I</b>.",
+  s13_singular:"det A = <b>0</b> → <span class='warn'>no existe inversa</span>. La matriz aplasta el espacio.",
+  s13_loaded:"Invirtiendo la flexibilidad <b>[S]⁻¹ = [Q]</b> — la línea clave de la guía. Rigidez y flexibilidad son inversas una de la otra.",
+  s13_analysis:"La inversa es el enlace entre \"qué tan rígido\" y \"cuánto se deforma.\" [Q]=[S]⁻¹ convierte flexibilidad de vuelta en rigidez; el canal de cortante incluso se invierte solo, Q₆₆=1/S₆₆=1/1.143=0.875. La misma relación escala: [a]=[A]⁻¹ convierte la rigidez del laminado en flexibilidad, y las constantes de ingeniería son derivadas directo de esa inversa (Eₓ=1/a*₁₁).",
+  s2_grp:"Parte 2",s2_title:"Características del Sistema y Resolubilidad",
+  s2_lead:"Dos chequeos de salud de un solo número: ¿aplasta la matriz el espacio a nada (determinante), y cuántas direcciones independientes restringe realmente (rango)?",
+  s21_title:"2.1 Determinante (det A)",
+  s21_simple:"El determinante es un número que mide cuánto escala una transformación el área (2D) o el volumen (3D). Si es <b>cero</b>, la matriz aplasta el espacio y <em>no puede invertirse</em>.",
+  s21_labtitle:"Laboratorio — el det como escala de área",
+  s21_edit:"A (edita las celdas)",s21_area:"área del cuadrado unidad →",s21_invq:"¿invertible?",
+  s21_leg1:"cuadrado unidad original",s21_leg2:"transformado (área = |det|)",
+  s21_note:"Cambia las columnas hasta que la figura verde colapse en una línea — eso es det = 0.",
+  s21_yes:"sí",s21_no:"NO — det = 0",
+  s21_analysis:"Para el bloque normal de la lámina, det = 17.249·1.291 − 0.439² = 22.08 ≠ 0, así que [Q] es invertible y la lámina tiene una respuesta esfuerzo–deformación bien definida. Un determinante cero significaría una dirección \"libre\" sin resistencia — un mecanismo. Revisar el determinante es una forma rápida de saber que un laminado está sano <em>antes</em> de confiar en su inversa.",
+  s22_title:"2.2 Rango y Nulidad",
+  s22_simple:"El <b>rango</b> cuenta cuántas direcciones independientes resiste realmente una matriz. El <b>espacio nulo</b> es el conjunto de entradas que envía a cero — direcciones donde el material no ofrece resistencia. Siempre suman: rango + nulidad = n.",
+  s22_labtitle:"Laboratorio — filas independientes",
+  s22_rank:"rango =",s22_null:"nulidad =",
+  s22_depbtn:"Hacer fila 2 = 2 × fila 1",s22_indbtn:"Hacer filas independientes",
+  s22_note:"Cuando una fila es múltiplo de otra, la matriz pierde un rango — aparece una dirección de deformación que produce cero esfuerzo (nulidad 1).",
+  s22_def:"<span class='warn'>Rango deficiente.</span> Hay una dirección de deformación que da cero esfuerzo — el espacio nulo no está vacío.",
+  s22_full:"Rango completo — cada dirección se resiste de forma independiente (nulidad 0). Este es un laminado sano.",
+  s22_analysis:"La lámina [Q] tiene rango completo 3: resiste el estiramiento en fibra, el estiramiento transversal y el cortante de forma independiente, así que su espacio nulo está vacío (nulidad 0). El rango completo es exactamente lo que se busca — un laminado que restringe toda deformación en el plano. También explica el resultado del \"laminado balanceado\": cuando Q₁₆=Q₂₆=0, la fila/columna de cortante es independiente de las normales, manteniendo la matriz de rango completo y limpiamente separada.",
+  s3_grp:"Parte 3",s3_title:"Descomposición Espectral y Análisis Modal",
+  s3_lead:"Encuentra las direcciones que una matriz no rota — solo estira. Esos ejes son el lenguaje natural de la rigidez, los esfuerzos principales y los modos de vibración.",
+  s31_title:"3.1 Valores y Vectores Propios (Ax = λx)",
+  s31_simple:"Un <b>vector propio</b> es una dirección especial que la matriz no rota — solo la estira. El factor de estiramiento es el <b>valor propio</b> λ. Se hallan de det(A − λI) = 0.",
+  s31_labtitle:"Laboratorio — caza las direcciones fijas",
+  s31_sym:"A simétrica",
+  s31_note:"Arrastra el vector azul alrededor del círculo. Cuando su imagen (naranja) se alinea con él — sin rotación — has encontrado un vector propio.",
+  s31_ang:"ángulo entre x y Ax:",s31_vals:"valores propios:",
+  s31_leg1:"tu dirección x",s31_leg2:"imagen Ax",s31_leg3:"direcciones propias",
+  s31_found:"  ✓ ¡vector propio!",
+  s31_analysis:"Los valores propios del bloque normal de la lámina (traza 18.54, det 22.08) resultan λ₁ ≈ 17.26 y λ₂ ≈ 1.28 Msi — E₁ y E₂, con vectores propios apuntando a lo largo y a través de las fibras. La matemática recupera los ejes físicos. La misma idea impulsa los esfuerzos/deformaciones principales (círculo de Mohr) y, más ampliamente, las frecuencias naturales y los modos de pandeo.",
+  s32_title:"3.2 Diagonalización (A = PDP⁻¹)",
+  s32_simple:"La diagonalización reescribe una matriz usando sus vectores propios (P) y valores propios (D) para que el comportamiento <em>acoplado</em> se vuelva un conjunto de comportamientos independientes, uno a la vez.",
+  s32_labtitle:"Laboratorio — el acoplamiento aparece y desaparece con el ángulo",
+  s32_rot:"Rotación de la lámina",s32_qbar:"Rigidez transformada [Q̄]",
+  s32_note:"En eje (0° o 90°) los términos de acoplamiento de cortante Q̄₁₆, Q̄₂₆ son cero. Rota fuera de eje y se llenan — el estiramiento y el cortante se acoplan.",
+  s32_decoupled:"desacoplado: estirar no induce cortante",s32_coupled:"acoplado: estirar ahora induce cortante",
+  s32_legfib:"dirección de fibra",s32_legload:"carga en x",
+  s32_explain:"<b>Por qué se mueven los números.</b> Estás viendo la <em>misma lámina física</em> desde ejes rotados un ángulo θ. La descomposición A = PDP⁻¹ la separa en P (la rotación hacia los ejes de fibra) y D — las rigideces principales fijas (17.26 / 1.28 / 0.875) que nunca cambian. En θ = 0° los ejes se alinean con las fibras, así que las celdas de acoplamiento resaltadas Q̄₁₆ y Q̄₂₆ son exactamente cero y la matriz es bloque-diagonal. Al rotar, \"rígido a lo largo de las fibras\" ahora apunta en parte hacia <em>ambos</em> x e y, así que la rigidez se redistribuye entre las celdas y los términos de acoplamiento resaltados crecen — máximos cerca de 45° — y vuelven a cero en 90°. Diagonalizar es lo inverso: rotar de vuelta a los ejes donde vive D y el acoplamiento desaparece.",
+  s32_analysis:"Por esto importa el ángulo de la lámina. Una lámina en eje (0°) ya es bloque-diagonal — Q₁₆=Q₂₆=0, cortante desacoplado de los dos canales normales. Rota fuera de eje y Q̄₁₆, Q̄₂₆ vuelven a acoplar extensión y cortante. Diagonalizar (o elegir 0°/90° y pares balanceados ±45°) es como desacoplas la respuesta de un laminado.",
+  s4_grp:"Parte 4",s4_title:"Factorizaciones Avanzadas de Matrices",
+  s4_lead:"Cómo los solvers realmente resuelven Ax=b, ajustan datos de ensayo ruidosos y miden qué tan desbalanceada está una matriz de rigidez — tres factorizaciones tras bambalinas.",
+  s41_title:"4.1 Descomposición LU (A = LU)",
+  s41_simple:"LU divide una matriz en una triangular <b>i</b>nferior (L) por una triangular <b>s</b>uperior (U). Los sistemas triangulares se resuelven al instante por sustitución hacia adelante/atrás — así es como los solvers realmente resuelven Ax=b: factoriza una vez, luego sustitución barata para cada caso de carga.",
+  s41_labtitle:"Laboratorio — factoriza en L · U",
+  s41_L:"L (inferior)",s41_U:"U (superior)",s41_loadbtn:"Cargar el bloque del laminado [A*]",
+  s41_read0:"L guarda los multiplicadores de eliminación (unos en su diagonal); U es lo que queda tras la eliminación. Multiplícalas para recuperar A.",
+  s41_pivot:"<span class='warn'>Requiere intercambio de pivote</span> — esta factorización simple encontró un pivote cero. Prueba otros números.",
+  s41_loaded:"Rigidez del laminado <b>[A*]</b>: el multiplicador L₂₁ = 0.303 coincide con la guía. Factoriza una vez, sustituye para cada caso de carga.",
+  s41_analysis:"Para hallar las deformaciones de un laminado bajo flujos de carga resuelves [N]=[A][ε]. En vez de formar [A]⁻¹, un solver factoriza la rigidez del laminado una sola vez y hace sustitución barata para cada caso de carga — eso es LU (o Cholesky, su prima simétrica) trabajando por debajo. Es lo que hace rápida toda la hoja de cálculo de CLPT.",
+  s42_title:"4.2 Descomposición QR (A = QR)",
+  s42_simple:"QR factoriza una matriz en una Q <b>ortogonal</b> (columnas unitarias perpendiculares — solo rotaciones/reflexiones, sin distorsión) por una triangular superior R. Como Q conserva las longitudes, es numéricamente muy estable.",
+  s42_labtitle:"Laboratorio — columnas ortonormales de Q",
+  s42_Q:"Q (ortonormal)",s42_R:"R (superior)",
+  s42_check:"¿verificar QᵀQ = I?",s42_checknote:"las columnas de Q son unitarias y perpendiculares.",
+  s42_ok:"✓ QᵀQ = I",
+  s42_analysis:"Supón que mides los datos esfuerzo–deformación de una lámina para extraer E₁, E₂, ν₁₂, G₁₂ — muchos más datos que incógnitas, un sistema sobredeterminado. QR da el ajuste estable por mínimos cuadrados que mejor recupera esas constantes de ensayos ruidosos, sin la explosión de error de formar AᵀA directamente. También es el motor tras el algoritmo QR que calcula los valores propios (rigideces principales) de arriba.",
+  s43_title:"4.3 Descomposición en Valores Singulares (A = UΣVᵀ)",
+  s43_simple:"La SVD funciona con <em>cualquier</em> matriz: escribe A como una rotación (Vᵀ), un estiramiento por los <b>valores singulares</b> en Σ, y otra rotación (U). Los valores singulares grandes llevan el comportamiento dominante; los pequeños suelen ser ruido.",
+  s43_labtitle:"Laboratorio — rotar · estirar · rotar",
+  s43_s1:"σ₁ (dir. más rígida) =",s43_s2:"σ₂ (dir. más blanda) =",
+  s43_note:"El círculo unidad se mapea a una elipse; sus dos semiejes son los valores singulares. Cuanto más desbalanceada la elipse, peor el condicionamiento.",
+  s43_step:"Recorre Vᵀ · Σ · U ▶",
+  s43_stage0:"<b>Etapa 0 — espacio de entrada.</b> El círculo unidad, con las dos direcciones singulares derechas v₁ (verde) y v₂ (azul). La SVD dice: <em>si</em> le das a A estas dos direcciones perpendiculares especiales, la salida sigue siendo perpendicular. Pulsa Paso.",
+  s43_stage1:"<b>Etapa 1 · Vᵀ (rotar).</b> Vᵀ gira v₁, v₂ sobre los ejes coordenados. Es una rotación pura — el círculo no cambia, aún no se estira nada.",
+  s43_stage2:"<b>Etapa 2 · Σ (estirar).</b> Σ escala los ejes por los valores singulares σ₁, σ₂. El círculo se vuelve una elipse alineada con los ejes — en esta etapa ocurre <em>todo</em> el estiramiento.",
+  s43_stage3:"<b>Etapa 3 · U (rotar).</b> U gira la elipse a su orientación final. El resultado es exactamente A · (círculo unidad); sus ejes principales son σ₁u₁ y σ₂u₂. Eso es rotar → estirar → rotar.",
+  s43_analysis:"Los valores singulares de la rigidez del laminado [A*] miden sus direcciones en el plano más rígida y más blanda — cerca de σmax ≈ 9.3 y σmin ≈ 2.6 Msi para el bloque de referencia, una razón de ≈3.6 que es la anisotropía / condicionamiento del laminado. La SVD cuantifica qué tan lejos está un apilado de ser casi-isótropo y avisa de una matriz de rigidez mal condicionada antes de que una inversa falle. Es la herramienta estándar para comprimir y quitar ruido a grandes conjuntos de datos experimentales.",
+  footer:"Construido a partir de la guía de composites Operaciones con Matrices · cada operación mostrada primero como intuición y luego aplicada a una lámina de carbono/epoxi a 0°. Los números reproducen el ejemplo de referencia [Q] de la guía. Interactúa libremente — nada se guarda.",
+  qtag:"Autoevaluación · predice primero"
+ }
+};
+
+/* Quizzes (English & spanish)  */
+const QUIZ={
+ en:{
+  mul:{q:"Pull a 0° ply purely along the fibers, [ε]=(0.001,0,0)ᵀ. Why does a transverse stress (0.44 ksi) still appear?",
+    opts:[["The off-diagonal Q₁₂ couples fiber strain into transverse stress.",true],["The matrix multiply is done in the wrong order.",false],["Transverse stress is always zero for a 0° ply.",false]],
+    ex:"The (2,1) entry of the answer is Q₁₂·ε₁ = 0.439·0.001·1000 ≈ 0.44 ksi. Off-diagonal terms are exactly this cross-coupling."},
+  tr:{q:"The compliance matrix [S] satisfies [S]ᵀ = [S]. What does that symmetry buy you physically?",
+    opts:[["The reciprocity relation ν₂₁/E₂ = ν₁₂/E₁, so you only need the upper triangle.",true],["It makes [S] impossible to invert.",false],["It doubles the number of independent constants.",false]],
+    ex:"S₁₂ = S₂₁ is the reciprocal Poisson relation — you recover ν₂₁ from ν₁₂, E₁, E₂ instead of measuring it separately."},
+  inv:{q:"What is the relationship between the ply stiffness [Q] and compliance [S]?",
+    opts:[["They are inverses: [Q] = [S]⁻¹ (and [S] = [Q]⁻¹).",true],["They are transposes of each other.",false],["They are equal.",false]],
+    ex:"Inversion is the connector between \"how stiff\" and \"how much it strains.\" [Q][S] = I."},
+  det:{q:"A laminate stiffness matrix has det = 0. What does that mean physically?",
+    opts:[["A \"free\" direction with no resistance — a mechanism; the matrix is not invertible.",true],["The laminate is maximally stiff.",false],["Nothing — determinant is just bookkeeping.",false]],
+    ex:"Zero determinant → space collapses in some direction → compliance cannot be formed. Check it before trusting an inverse."},
+  rank:{q:"A 3×3 stiffness matrix turns out to have rank 2. What is its nullity, and what does it imply?",
+    opts:[["Nullity 1 — there is a strain direction that produces zero stress.",true],["Nullity 0 — it is perfectly healthy.",false],["Nullity 3 — it resists nothing.",false]],
+    ex:"rank + nullity = n = 3, so nullity = 1: one deformation the material does not resist. Full rank (3) is what you want."},
+  eig:{q:"The eigenvalues of the ply's normal block come out ≈17.26 and ≈1.28 Msi. What are they?",
+    opts:[["The principal stiffnesses — essentially E₁ and E₂, along and across the fibers.",true],["Random numerical artifacts.",false],["The Poisson ratios.",false]],
+    ex:"Eigen-analysis recovers the physical material axes; the eigenvectors point along and across the fibers."},
+  diag:{q:"Why does rotating a ply off-axis fill in the Q̄₁₆, Q̄₂₆ terms?",
+    opts:[["Off-axis, stretching and shear become coupled; on-axis they are decoupled (block-diagonal).",true],["Rotation always makes a matrix singular.",false],["Those terms are numerical error.",false]],
+    ex:"On-axis 0°/90° plies are already block-diagonal. Diagonalization / balanced ±45° pairs is how you decouple the laminate."},
+  lu:{q:"Why factor a laminate stiffness into L·U instead of forming its inverse?",
+    opts:[["Factor once, then solve every load case cheaply by forward/back substitution.",true],["LU is the only way to get the determinant.",false],["The inverse does not exist for stiffness matrices.",false]],
+    ex:"Triangular systems solve instantly. LU (or Cholesky) is what makes the CLPT spreadsheet fast."},
+  qr:{q:"You have many noisy coupon measurements and 4 unknown ply constants. Why reach for QR?",
+    opts:[["It gives a stable least-squares fit without the error blow-up of forming AᵀA.",true],["It is the fastest way to multiply matrices.",false],["QR only works on square matrices.",false]],
+    ex:"Q has orthonormal columns (QᵀQ = I) so it preserves lengths — numerically stable for over-determined fits."},
+  svd:{q:"The laminate stiffness has σ₁/σ₂ ≈ 3.6. What does that ratio tell you?",
+    opts:[["How anisotropic / ill-conditioned it is — how far from quasi-isotropic.",true],["That the matrix is singular.",false],["The number of plies in the layup.",false]],
+    ex:"The condition number σmax/σmin flags directional lopsidedness and warns before an inverse goes bad."}
+ },
+ es:{
+  mul:{q:"Tira de una lámina a 0° puramente a lo largo de las fibras, [ε]=(0.001,0,0)ᵀ. ¿Por qué aún aparece un esfuerzo transversal (0.44 ksi)?",
+    opts:[["El término fuera de la diagonal Q₁₂ acopla la deformación de fibra en esfuerzo transversal.",true],["La multiplicación se hizo en el orden equivocado.",false],["El esfuerzo transversal siempre es cero para una lámina a 0°.",false]],
+    ex:"La entrada (2,1) del resultado es Q₁₂·ε₁ = 0.439·0.001·1000 ≈ 0.44 ksi. Los términos fuera de la diagonal son exactamente este acoplamiento cruzado."},
+  tr:{q:"La matriz de flexibilidad [S] cumple [S]ᵀ = [S]. ¿Qué te da físicamente esa simetría?",
+    opts:[["La relación de reciprocidad ν₂₁/E₂ = ν₁₂/E₁, así solo necesitas el triángulo superior.",true],["Hace imposible invertir [S].",false],["Duplica el número de constantes independientes.",false]],
+    ex:"S₁₂ = S₂₁ es la relación recíproca de Poisson — recuperas ν₂₁ de ν₁₂, E₁, E₂ en vez de medirla aparte."},
+  inv:{q:"¿Cuál es la relación entre la rigidez [Q] y la flexibilidad [S] de la lámina?",
+    opts:[["Son inversas: [Q] = [S]⁻¹ (y [S] = [Q]⁻¹).",true],["Son transpuestas una de la otra.",false],["Son iguales.",false]],
+    ex:"La inversión es el enlace entre \"qué tan rígido\" y \"cuánto se deforma.\" [Q][S] = I."},
+  det:{q:"Una matriz de rigidez de laminado tiene det = 0. ¿Qué significa físicamente?",
+    opts:[["Una dirección \"libre\" sin resistencia — un mecanismo; la matriz no es invertible.",true],["El laminado es máximamente rígido.",false],["Nada — el determinante es solo contabilidad.",false]],
+    ex:"Determinante cero → el espacio colapsa en alguna dirección → no puede formarse la flexibilidad. Revísalo antes de confiar en una inversa."},
+  rank:{q:"Una matriz de rigidez 3×3 resulta tener rango 2. ¿Cuál es su nulidad y qué implica?",
+    opts:[["Nulidad 1 — hay una dirección de deformación que produce cero esfuerzo.",true],["Nulidad 0 — está perfectamente sana.",false],["Nulidad 3 — no resiste nada.",false]],
+    ex:"rango + nulidad = n = 3, así que nulidad = 1: una deformación que el material no resiste. El rango completo (3) es lo que quieres."},
+  eig:{q:"Los valores propios del bloque normal de la lámina resultan ≈17.26 y ≈1.28 Msi. ¿Qué son?",
+    opts:[["Las rigideces principales — esencialmente E₁ y E₂, a lo largo y a través de las fibras.",true],["Artefactos numéricos aleatorios.",false],["Los coeficientes de Poisson.",false]],
+    ex:"El análisis propio recupera los ejes físicos del material; los vectores propios apuntan a lo largo y a través de las fibras."},
+  diag:{q:"¿Por qué rotar una lámina fuera de eje llena los términos Q̄₁₆, Q̄₂₆?",
+    opts:[["Fuera de eje, estiramiento y cortante se acoplan; en eje están desacoplados (bloque-diagonal).",true],["La rotación siempre vuelve singular una matriz.",false],["Esos términos son error numérico.",false]],
+    ex:"Las láminas en eje 0°/90° ya son bloque-diagonal. La diagonalización / pares balanceados ±45° es como desacoplas el laminado."},
+  lu:{q:"¿Por qué factorizar una rigidez de laminado en L·U en vez de formar su inversa?",
+    opts:[["Factorizas una vez, luego resuelves cada caso de carga barato por sustitución.",true],["LU es la única forma de obtener el determinante.",false],["La inversa no existe para matrices de rigidez.",false]],
+    ex:"Los sistemas triangulares se resuelven al instante. LU (o Cholesky) es lo que hace rápida la hoja de CLPT."},
+  qr:{q:"Tienes muchas mediciones ruidosas y 4 constantes de lámina desconocidas. ¿Por qué usar QR?",
+    opts:[["Da un ajuste estable por mínimos cuadrados sin la explosión de error de formar AᵀA.",true],["Es la forma más rápida de multiplicar matrices.",false],["QR solo funciona en matrices cuadradas.",false]],
+    ex:"Q tiene columnas ortonormales (QᵀQ = I) así que conserva longitudes — numéricamente estable para ajustes sobredeterminados."},
+  svd:{q:"La rigidez del laminado tiene σ₁/σ₂ ≈ 3.6. ¿Qué te dice esa razón?",
+    opts:[["Qué tan anisótropa / mal condicionada es — qué tan lejos de casi-isótropa.",true],["Que la matriz es singular.",false],["El número de láminas en el apilado.",false]],
+    ex:"El número de condición σmax/σmin señala el desbalance direccional y avisa antes de que una inversa falle."}
+ }
+};
+
+/* lin-alag library  */
+const M={
+  mul(A,B){const n=A.length,m=B[0].length,k=B.length;const C=Array.from({length:n},()=>Array(m).fill(0));
+    for(let i=0;i<n;i++)for(let j=0;j<m;j++){let s=0;for(let p=0;p<k;p++)s+=A[i][p]*B[p][j];C[i][j]=s;}return C;},
+  T(A){const n=A.length,m=A[0].length;const C=Array.from({length:m},()=>Array(n).fill(0));
+    for(let i=0;i<n;i++)for(let j=0;j<m;j++)C[j][i]=A[i][j];return C;},
+  det(A){const n=A.length;const a=A.map(r=>r.slice());let d=1;
+    for(let i=0;i<n;i++){let p=i;for(let r=i+1;r<n;r++)if(Math.abs(a[r][i])>Math.abs(a[p][i]))p=r;
+      if(Math.abs(a[p][i])<1e-12)return 0;if(p!==i){[a[p],a[i]]=[a[i],a[p]];d=-d;}
+      d*=a[i][i];for(let r=i+1;r<n;r++){const f=a[r][i]/a[i][i];for(let c=i;c<n;c++)a[r][c]-=f*a[i][c];}}return d;},
+  inv(A){const n=A.length;const a=A.map((r,i)=>[...r,...Array.from({length:n},(_,j)=>i===j?1:0)]);
+    for(let i=0;i<n;i++){let p=i;for(let r=i+1;r<n;r++)if(Math.abs(a[r][i])>Math.abs(a[p][i]))p=r;
+      if(Math.abs(a[p][i])<1e-12)return null;[a[p],a[i]]=[a[i],a[p]];
+      const pv=a[i][i];for(let c=0;c<2*n;c++)a[i][c]/=pv;
+      for(let r=0;r<n;r++)if(r!==i){const f=a[r][i];for(let c=0;c<2*n;c++)a[r][c]-=f*a[i][c];}}return a.map(r=>r.slice(n));},
+  rank(A){const a=A.map(r=>r.slice());const n=a.length,m=a[0].length;let rank=0,row=0;
+    for(let col=0;col<m&&row<n;col++){let p=row;for(let r=row+1;r<n;r++)if(Math.abs(a[r][col])>Math.abs(a[p][col]))p=r;
+      if(Math.abs(a[p][col])<1e-9)continue;[a[p],a[row]]=[a[row],a[p]];
+      const pv=a[row][col];for(let c=0;c<m;c++)a[row][c]/=pv;
+      for(let r=0;r<n;r++)if(r!==row){const f=a[r][col];for(let c=0;c<m;c++)a[r][c]-=f*a[row][c];}row++;rank++;}return rank;},
+  eig2sym(A){const a=A[0][0],b=A[0][1],d=A[1][1];const tr=a+d,dt=a*d-b*b;
+    const disc=Math.sqrt(Math.max(0,tr*tr/4-dt));const l1=tr/2+disc,l2=tr/2-disc;
+    const vec=l=>{let vx=b,vy=l-a;if(Math.abs(vx)<1e-9&&Math.abs(vy)<1e-9){vx=1;vy=0;}
+      const n=Math.hypot(vx,vy);return[vx/n,vy/n];};return{vals:[l1,l2],vecs:[vec(l1),vec(l2)]};},
+  lu(A){const n=A.length;const L=Array.from({length:n},()=>Array(n).fill(0));const U=Array.from({length:n},()=>Array(n).fill(0));
+    for(let i=0;i<n;i++){L[i][i]=1;
+      for(let j=i;j<n;j++){let s=0;for(let k=0;k<i;k++)s+=L[i][k]*U[k][j];U[i][j]=A[i][j]-s;}
+      for(let j=i+1;j<n;j++){let s=0;for(let k=0;k<i;k++)s+=L[j][k]*U[k][i];
+        if(Math.abs(U[i][i])<1e-12)return null;L[j][i]=(A[j][i]-s)/U[i][i];}}return{L,U};},
+  qr(A){const n=A.length,m=A[0].length;const cols=[];for(let j=0;j<m;j++)cols.push(A.map(r=>r[j]));
+    const Q=[],R=Array.from({length:m},()=>Array(m).fill(0));
+    for(let j=0;j<m;j++){let v=cols[j].slice();
+      for(let i=0;i<j;i++){let dot=0;for(let k=0;k<n;k++)dot+=Q[i][k]*cols[j][k];R[i][j]=dot;
+        for(let k=0;k<n;k++)v[k]-=dot*Q[i][k];}
+      const nrm=Math.hypot(...v);R[j][j]=nrm;Q.push(v.map(x=>nrm<1e-12?0:x/nrm));}
+    const Qm=Array.from({length:n},(_,i)=>Q.map(q=>q[i]));return{Q:Qm,R};}
+};
+const fmt=(x,p=3)=>{if(Math.abs(x)<1e-9)x=0;const r=Number(x.toFixed(p));return Object.is(r,-0)?0:r;};
+
+/*  helpers  */
+let LANG='en';
+const REFRESH=[];
+function t(key){return (DICT[LANG][key]!==undefined?DICT[LANG][key]:DICT.en[key])||'';}
+function fillStatic(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=t(el.dataset.i18n);});
+}
+function fmtTpl(str,obj){return str.replace(/\{(\w+)\}/g,(m,k)=>obj[k]!==undefined?obj[k]:m);}
+function setLang(l){
+  LANG=l;document.documentElement.lang=l;
+  document.getElementById('lang-en').classList.toggle('on',l==='en');
+  document.getElementById('lang-es').classList.toggle('on',l==='es');
+  fillStatic();
+  buildQuizzes();
+  REFRESH.forEach(fn=>{try{fn();}catch(e){}});
+}
+
+/* Matrix grid pre-made-widget  */
+function makeGrid(el,data,{editable=true,onInput=null}={}){
+  el.style.gridTemplateColumns=`repeat(${data[0].length},auto)`;el.innerHTML='';const inputs=[];
+  data.forEach((row,i)=>{const rowArr=[];row.forEach((val,j)=>{
+    const inp=document.createElement('input');inp.className='cell '+(editable?'':'ro');
+    inp.type='number';inp.step='any';inp.value=fmt(val);inp.dataset.i=i;inp.dataset.j=j;
+    if(!editable)inp.readOnly=true;if(editable&&onInput)inp.addEventListener('input',onInput);
+    el.appendChild(inp);rowArr.push(inp);});inputs.push(rowArr);});return inputs;
+}
+function readGrid(inputs){return inputs.map(r=>r.map(c=>parseFloat(c.value)||0));}
+function writeGrid(inputs,data){inputs.forEach((r,i)=>r.forEach((c,j)=>c.value=fmt(data[i][j])));}
+function clearHL(inputs){inputs.forEach(r=>r.forEach(c=>c.className=c.className.replace(/ hl-[\w-]+/g,'')));}
+/* resize helpers */
+function zeros(n,m){return Array.from({length:n},()=>Array(m).fill(0));}
+function resizeData(old,n,def){const D=[];for(let i=0;i<n;i++){const r=[];for(let j=0;j<n;j++)r.push(old[i]&&old[i][j]!==undefined?old[i][j]:def(i,j));D.push(r);}return D;}
+function gridEd(id,data,onInput){const el=document.getElementById(id);el.style.gridTemplateColumns='';return makeGrid(el,data,{onInput});}
+function gridRO(id,data){const el=document.getElementById(id);el.style.gridTemplateColumns='';return makeGrid(el,data,{editable:false});}
+function sizeControl(cur,onChange){const w=document.createElement('div');w.className='size-ctrl';
+  const lbl=document.createElement('span');lbl.className='size-lbl';lbl.dataset.i18n='c_size';lbl.textContent=t('c_size');w.appendChild(lbl);
+  [2,3,4,5].forEach(n=>{const b=document.createElement('button');b.className='size-btn'+(n===cur?' on':'');b.textContent=n+'×'+n;
+    b.onclick=()=>{w.querySelectorAll('.size-btn').forEach(x=>x.classList.remove('on'));b.classList.add('on');onChange(n);};w.appendChild(b);});
+  return w;}
+function addSize(labId,cur,onChange){const lab=document.getElementById(labId);lab.insertBefore(sizeControl(cur,onChange),lab.children[1]);}
+
+/*  Running ply data  */
+const Q=[[17.249,0.439,0],[0.439,1.291,0],[0,0,0.875]];
+const S=[[0.0585,-0.0199,0],[-0.0199,0.7813,0],[0,0,1.143]];
+const Astar=[[7.473,2.267,0],[2.267,6.445,0],[0,0,2.574]];
+
+/*  1.1 mat-Multiplication  */
+(function(){
+  let A=[[1,2],[3,4]],B=[[2,0],[1,2]],loaded=false;
+  let gA=makeGrid(document.getElementById('mulA'),A,{onInput:recompute});
+  let gB=makeGrid(document.getElementById('mulB'),B,{onInput:recompute});
+  let gC=makeGrid(document.getElementById('mulC'),zeros(2,2),{editable:false});
+  const read=document.getElementById('mul-read');
+  let seq=[],idx=0,timer=null;
+  function recompute(){A=readGrid(gA);B=readGrid(gB);writeGrid(gC,M.mul(A,B));buildSeq();resetHL();}
+  function buildSeq(){seq=[];for(let i=0;i<A.length;i++)for(let j=0;j<B[0].length;j++)seq.push([i,j]);}
+  function resetHL(){clearHL(gA);clearHL(gB);clearHL(gC);idx=0;}
+  function stopTimer(){if(timer){clearInterval(timer);timer=null;}document.getElementById('mul-auto').textContent=t('s11_auto');}
+  function stepShow(){clearHL(gA);clearHL(gB);clearHL(gC);
+    if(idx>=seq.length){read.innerHTML=t('s11_done');idx=0;return;}
+    const[i,j]=seq[idx];let terms=[],sum=0;
+    for(let p=0;p<B.length;p++){gA[i][p].className+=' hl-row';gB[p][j].className+=' hl-col';
+      terms.push(`${fmt(A[i][p])}·${fmt(B[p][j])}`);sum+=A[i][p]*B[p][j];}
+    gC[i][j].className+=' hl-out';
+    read.innerHTML=fmtTpl(t('s11_readTpl'),{i:i+1,j:j+1,terms:terms.join(' + '),sum:fmt(sum)});idx++;}
+  document.getElementById('mul-step').onclick=()=>{stopTimer();stepShow();};
+  document.getElementById('mul-auto').onclick=e=>{const btn=e.target;
+    if(timer){stopTimer();return;}btn.textContent=t('s11_pause');idx=0;
+    timer=setInterval(()=>{stepShow();if(idx===0){stopTimer();}},1100);};
+  document.getElementById('mul-reset').onclick=()=>{stopTimer();resetHL();read.innerHTML=t('s11_read0');};
+  document.getElementById('mul-load').onclick=()=>{stopTimer();loaded=true;
+    gA=gridEd('mulA',Q,recompute);gB=gridEd('mulB',[[0.001],[0],[0]],recompute);gC=gridRO('mulC',zeros(3,1));
+    document.getElementById('mul-lblA').textContent='[Q] 3×3';recompute();read.innerHTML=t('s11_loaded');};
+  function rebuild(n){stopTimer();loaded=false;
+    gA=gridEd('mulA',resizeData(readGrid(gA),n,(i,j)=>i===j?1:0),recompute);
+    gB=gridEd('mulB',resizeData(readGrid(gB),n,(i,j)=>i===j?1:0),recompute);
+    gC=gridRO('mulC',zeros(n,n));
+    document.getElementById('mul-lblA').textContent='A '+n+'×'+n;recompute();read.innerHTML=t('s11_read0');}
+  addSize('lab-mul',2,rebuild);
+  REFRESH.push(()=>{read.innerHTML=loaded?t('s11_loaded'):t('s11_read0');document.getElementById('mul-auto').textContent=t('s11_auto');});
+  recompute();read.innerHTML=t('s11_read0');
+})();
+
+/*  1.2 mat-tran  */
+(function(){
+  let A=[[1,2],[3,4]],loaded=false;
+  let gA=makeGrid(document.getElementById('trA'),A,{onInput:recompute});
+  let gC=makeGrid(document.getElementById('trC'),zeros(2,2),{editable:false});
+  const read=document.getElementById('tr-read'),st=document.getElementById('tr-symstate');
+  function recompute(){A=readGrid(gA);writeGrid(gC,M.T(A));
+    let sym=true;for(let i=0;i<A.length;i++)for(let j=0;j<A[0].length;j++)if(Math.abs(A[i][j]-A[j][i])>1e-9)sym=false;
+    st.innerHTML=sym?t('s12_sym'):t('s12_notsym');st.style.color=sym?'#0f7a43':'#8891a5';hook();}
+  function hook(){gA.forEach((r,i)=>r.forEach((c,j)=>{c.onmouseenter=()=>{clearHL(gA);clearHL(gC);
+      c.className+=' hl-both';gC[j][i].className+=' hl-out';
+      read.innerHTML=i===j?fmtTpl(t('s12_readDiag'),{i:i+1,j:j+1}):fmtTpl(t('s12_readSwap'),{i:i+1,j:j+1,val:fmt(A[i][j])});};
+      c.onmouseleave=()=>{clearHL(gA);clearHL(gC);};}));}
+  document.getElementById('tr-sym').onclick=()=>{A=readGrid(gA);
+    for(let i=0;i<A.length;i++)for(let j=i+1;j<A[0].length;j++)A[j][i]=A[i][j];writeGrid(gA,A);recompute();};
+  document.getElementById('tr-load').onclick=()=>{loaded=true;
+    gA=gridEd('trA',S,recompute);gC=gridRO('trC',zeros(3,3));recompute();read.innerHTML=t('s12_loaded');};
+  function rebuild(n){loaded=false;gA=gridEd('trA',resizeData(readGrid(gA),n,(i,j)=>i===j?1:0),recompute);gC=gridRO('trC',zeros(n,n));recompute();read.innerHTML=t('s12_read0');}
+  addSize('lab-tr',2,rebuild);
+  REFRESH.push(()=>{read.innerHTML=loaded?t('s12_loaded'):t('s12_read0');recompute();});
+  recompute();read.innerHTML=t('s12_read0');
+})();
+
+/*  1.3 Inverse  */
+(function(){
+  let A=[[4,3],[6,3]];
+  let gA=makeGrid(document.getElementById('invA'),A,{onInput:recompute});
+  let gC=makeGrid(document.getElementById('invC'),zeros(2,2),{editable:false});
+  let gI=makeGrid(document.getElementById('invI'),zeros(2,2),{editable:false});
+  const read=document.getElementById('inv-read');
+  function recompute(){A=readGrid(gA);const d=M.det(A),inv=M.inv(A);
+    if(!inv){read.innerHTML=t('s13_singular');gC.forEach(r=>r.forEach(c=>c.value='—'));gI.forEach(r=>r.forEach(c=>c.value='—'));return;}
+    writeGrid(gC,inv);writeGrid(gI,M.mul(A,inv));read.innerHTML=fmtTpl(t('s13_exists'),{d:fmt(d)});}
+  document.getElementById('inv-load').onclick=()=>{
+    gA=gridEd('invA',S,recompute);gC=gridRO('invC',zeros(3,3));gI=gridRO('invI',zeros(3,3));recompute();read.innerHTML=t('s13_loaded');};
+  document.getElementById('inv-sing').onclick=()=>{const a=readGrid(gA);a[1]=a[0].map(x=>2*x);gA=gridEd('invA',a,recompute);recompute();};
+  function rebuild(n){gA=gridEd('invA',resizeData(readGrid(gA),n,(i,j)=>i===j?1:0),recompute);gC=gridRO('invC',zeros(n,n));gI=gridRO('invI',zeros(n,n));recompute();}
+  addSize('lab-inv',2,rebuild);
+  REFRESH.push(recompute);recompute();
+})();
+
+/*  2.1 Determinant + cartesian grid */
+(function(){
+  let A=[[1.5,0.5],[0.3,1.2]];
+  const cv=document.getElementById('detCanvas'),cx=cv.getContext('2d');
+  const gA=makeGrid(document.getElementById('detA'),A,{onInput:recompute});
+  const W=cv.width,H=cv.height,ox=W/2,oy=H/2,sc=70;
+  const toX=x=>ox+x*sc,toY=y=>oy-y*sc;
+  function grid(){cx.clearRect(0,0,W,H);cx.strokeStyle='#eef1f6';cx.lineWidth=1;
+    for(let i=-4;i<=4;i++){cx.beginPath();cx.moveTo(toX(i),0);cx.lineTo(toX(i),H);cx.stroke();
+      cx.beginPath();cx.moveTo(0,toY(i));cx.lineTo(W,toY(i));cx.stroke();}
+    cx.strokeStyle='#c3cbd9';cx.lineWidth=1.5;cx.beginPath();cx.moveTo(0,oy);cx.lineTo(W,oy);cx.stroke();
+    cx.beginPath();cx.moveTo(ox,0);cx.lineTo(ox,H);cx.stroke();}
+  function poly(pts,fill,stroke){cx.beginPath();cx.moveTo(toX(pts[0][0]),toY(pts[0][1]));
+    for(let i=1;i<pts.length;i++)cx.lineTo(toX(pts[i][0]),toY(pts[i][1]));cx.closePath();
+    cx.fillStyle=fill;cx.fill();cx.strokeStyle=stroke;cx.lineWidth=2;cx.stroke();}
+  function recompute(){A=readGrid(gA);const d=A[0][0]*A[1][1]-A[0][1]*A[1][0];grid();
+    poly([[0,0],[1,0],[1,1],[0,1]],'rgba(200,200,200,.35)','#b7bece');
+    const c1=[A[0][0],A[1][0]],c2=[A[0][1],A[1][1]];
+    poly([[0,0],c1,[c1[0]+c2[0],c1[1]+c2[1]],c2],'rgba(18,153,90,.28)','#12995a');
+    cx.strokeStyle='#0f7a43';cx.lineWidth=2.5;[c1,c2].forEach(v=>{cx.beginPath();cx.moveTo(toX(0),toY(0));cx.lineTo(toX(v[0]),toY(v[1]));cx.stroke();});
+    document.getElementById('det-val').textContent=fmt(d);
+    document.getElementById('det-area').textContent=fmt(Math.abs(d));
+    const el=document.getElementById('det-inv');el.textContent=Math.abs(d)<1e-6?t('s21_no'):t('s21_yes');
+    el.style.color=Math.abs(d)<1e-6?'#b23b2e':'';}
+  REFRESH.push(recompute);recompute();
+})();
+
+/*  2.2 Rank  */
+(function(){
+  let A=[[1,2],[2,4]];
+  let gA=makeGrid(document.getElementById('rankA'),A,{onInput:recompute});
+  function recompute(){A=readGrid(gA);const r=M.rank(A),n=A[0].length,nul=n-r;
+    document.getElementById('rank-val').textContent=r;document.getElementById('null-val').textContent=nul;
+    document.getElementById('rank-msg').innerHTML=nul>0?t('s22_def'):t('s22_full');}
+  document.getElementById('rank-dep').onclick=()=>{const a=readGrid(gA);a[1]=a[0].map(x=>2*x);gA=gridEd('rankA',a,recompute);recompute();};
+  document.getElementById('rank-ind').onclick=()=>{const n=readGrid(gA).length;gA=gridEd('rankA',resizeData([],n,(i,j)=>i===j?2:(i<j?1:0)),recompute);recompute();};
+  function rebuild(n){gA=gridEd('rankA',resizeData(readGrid(gA),n,(i,j)=>i===j?1:0),recompute);recompute();}
+  addSize('lab-rank',2,rebuild);
+  REFRESH.push(recompute);recompute();
+})();
+
+/*  3.1 Eigen graph */
+(function(){
+  let A=[[2,0.8],[0.8,1]];
+  const cv=document.getElementById('eigCanvas'),cx=cv.getContext('2d');
+  const gA=makeGrid(document.getElementById('eigA'),A,{onInput:recompute});
+  const W=cv.width,H=cv.height,ox=W/2,oy=H/2,R=110;let ang=0.6;
+  function draw(){cx.clearRect(0,0,W,H);cx.strokeStyle='#eef1f6';
+    for(let i=-3;i<=3;i++){cx.beginPath();cx.moveTo(ox+i*40,0);cx.lineTo(ox+i*40,H);cx.stroke();
+      cx.beginPath();cx.moveTo(0,oy+i*40);cx.lineTo(W,oy+i*40);cx.stroke();}
+    cx.strokeStyle='#c3cbd9';cx.beginPath();cx.arc(ox,oy,R,0,7);cx.stroke();
+    cx.beginPath();cx.moveTo(0,oy);cx.lineTo(W,oy);cx.moveTo(ox,0);cx.lineTo(ox,H);cx.stroke();
+    const e=M.eig2sym(A);
+    cx.strokeStyle='rgba(18,153,90,.55)';cx.lineWidth=2;cx.setLineDash([6,5]);
+    e.vecs.forEach(v=>{cx.beginPath();cx.moveTo(ox-v[0]*160,oy+v[1]*160);cx.lineTo(ox+v[0]*160,oy-v[1]*160);cx.stroke();});
+    cx.setLineDash([]);
+    const x=[Math.cos(ang),Math.sin(ang)];
+    const Ax=[A[0][0]*x[0]+A[0][1]*x[1],A[1][0]*x[0]+A[1][1]*x[1]];
+    const arrow=(v,col,len)=>{cx.strokeStyle=col;cx.fillStyle=col;cx.lineWidth=3;
+      const ex=ox+v[0]*len,ey=oy-v[1]*len;cx.beginPath();cx.moveTo(ox,oy);cx.lineTo(ex,ey);cx.stroke();
+      const a=Math.atan2(-v[1],v[0]);cx.beginPath();cx.moveTo(ex,ey);
+      cx.lineTo(ex-12*Math.cos(a-0.4),ey-12*Math.sin(a-0.4));cx.lineTo(ex-12*Math.cos(a+0.4),ey-12*Math.sin(a+0.4));cx.closePath();cx.fill();};
+    arrow(Ax,'#c8641e',R*0.85);arrow(x,'#2a5bd7',R);
+    const dot=(x[0]*Ax[0]+x[1]*Ax[1])/(Math.hypot(...x)*Math.hypot(...Ax));
+    const between=Math.acos(Math.max(-1,Math.min(1,dot)))*180/Math.PI;
+    const el=document.getElementById('eig-ang');el.textContent=fmt(between,1)+'°'+(between<2?t('s31_found'):'');
+    el.style.color=between<2?'#0f7a43':'';
+    document.getElementById('eig-vals').textContent='λ₁='+fmt(e.vals[0],2)+', λ₂='+fmt(e.vals[1],2);}
+  function recompute(){A=readGrid(gA);A[1][0]=A[0][1];writeGrid(gA,A);draw();}
+  function setFromEvent(ev){const r=cv.getBoundingClientRect();const mx=(ev.clientX-r.left)-ox,my=oy-(ev.clientY-r.top);ang=Math.atan2(my,mx);draw();}
+  let drag=false;
+  cv.addEventListener('pointerdown',e=>{drag=true;setFromEvent(e);});
+  cv.addEventListener('pointermove',e=>{if(drag)setFromEvent(e);});
+  window.addEventListener('pointerup',()=>drag=false);
+  REFRESH.push(draw);recompute();
+})();
+
+/*  3.2 Diagonalization  */
+(function(){
+  const gA=makeGrid(document.getElementById('diagA'),Q,{editable:false});
+  const slider=document.getElementById('diag-slider');
+  const cv=document.getElementById('diagCanvas'),cx=cv.getContext('2d');
+  function Qbar(th){const c=Math.cos(th),s=Math.sin(th),c2=c*c,s2=s*s;
+    const Q11=Q[0][0],Q22=Q[1][1],Q12=Q[0][1],Q66=Q[2][2];
+    const b11=Q11*c2*c2+2*(Q12+2*Q66)*s2*c2+Q22*s2*s2;
+    const b22=Q11*s2*s2+2*(Q12+2*Q66)*s2*c2+Q22*c2*c2;
+    const b12=(Q11+Q22-4*Q66)*s2*c2+Q12*(s2*s2+c2*c2);
+    const b66=(Q11+Q22-2*Q12-2*Q66)*s2*c2+Q66*(s2*s2+c2*c2);
+    const b16=(Q11-Q12-2*Q66)*c2*c*s+(Q12-Q22+2*Q66)*s2*s*c;
+    const b26=(Q11-Q12-2*Q66)*s2*s*c+(Q12-Q22+2*Q66)*c2*c*s;
+    return[[b11,b12,b16],[b12,b22,b26],[b16,b26,b66]];}
+  function drawPly(th){const W=cv.width,H=cv.height,ox=W/2,oy=H/2,R=92;
+    cx.clearRect(0,0,W,H);
+    cx.save();cx.translate(ox,oy);
+    cx.fillStyle='#eef2fb';cx.strokeStyle='#c6d3ee';cx.lineWidth=2;
+    cx.beginPath();cx.rect(-R,-R,2*R,2*R);cx.fill();cx.stroke();
+    cx.save();cx.beginPath();cx.rect(-R,-R,2*R,2*R);cx.clip();cx.rotate(-th);
+    cx.strokeStyle='#12995a';cx.lineWidth=3;
+    for(let y=-R*1.6;y<R*1.6;y+=17){cx.beginPath();cx.moveTo(-R*1.7,y);cx.lineTo(R*1.7,y);cx.stroke();}
+    cx.restore();cx.restore();
+    /* x-direction load: double arrow across */
+    cx.strokeStyle='#c8641e';cx.fillStyle='#c8641e';cx.lineWidth=2.5;
+    const y=oy,xl=ox-R-34,xr=ox+R+34;
+    cx.beginPath();cx.moveTo(ox-R-8,y);cx.lineTo(xl,y);cx.stroke();
+    cx.beginPath();cx.moveTo(ox+R+8,y);cx.lineTo(xr,y);cx.stroke();
+    cx.beginPath();cx.moveTo(xl,y);cx.lineTo(xl+11,y-6);cx.lineTo(xl+11,y+6);cx.closePath();cx.fill();
+    cx.beginPath();cx.moveTo(xr,y);cx.lineTo(xr-11,y-6);cx.lineTo(xr-11,y+6);cx.closePath();cx.fill();}
+  function upd(){const deg=+slider.value,th=deg*Math.PI/180,B=Qbar(th);writeGrid(gA,B);
+    document.getElementById('diag-ang').textContent=deg;
+    clearHL(gA);[[0,2],[1,2],[2,0],[2,1]].forEach(([i,j])=>{if(Math.abs(B[i][j])>1e-4)gA[i][j].className+=' hl-couple';});
+    const q16=B[0][2],q26=B[1][2];
+    document.getElementById('diag-q16').textContent=fmt(q16,3);
+    document.getElementById('diag-q26').textContent=fmt(q26,3);
+    const dec=Math.abs(q16)<1e-4&&Math.abs(q26)<1e-4;const st=document.getElementById('diag-state');
+    st.textContent=dec?t('s32_decoupled'):t('s32_coupled');st.style.color=dec?'#0f7a43':'#c8641e';
+    drawPly(th);}
+  slider.addEventListener('input',upd);
+  document.querySelectorAll('#lab-diag [data-ang]').forEach(b=>b.onclick=()=>{slider.value=b.dataset.ang;upd();});
+  REFRESH.push(upd);upd();
+})();
+
+/*  4.1 LU  */
+(function(){
+  let A=[[4,3],[6,3]],loaded=false;
+  let gA=makeGrid(document.getElementById('luA'),A,{onInput:recompute});
+  let gL=makeGrid(document.getElementById('luL'),zeros(2,2),{editable:false});
+  let gU=makeGrid(document.getElementById('luU'),zeros(2,2),{editable:false});
+  const read=document.getElementById('lu-read');
+  function recompute(){A=readGrid(gA);const r=M.lu(A);
+    if(!r){read.innerHTML=t('s41_pivot');return;}writeGrid(gL,r.L);writeGrid(gU,r.U);read.innerHTML=loaded?t('s41_loaded'):t('s41_read0');}
+  document.getElementById('lu-load').onclick=()=>{loaded=true;
+    gA=gridEd('luA',Astar,recompute);gL=gridRO('luL',zeros(3,3));gU=gridRO('luU',zeros(3,3));recompute();};
+  function rebuild(n){loaded=false;gA=gridEd('luA',resizeData(readGrid(gA),n,(i,j)=>i===j?2:(i<j?1:0)),recompute);gL=gridRO('luL',zeros(n,n));gU=gridRO('luU',zeros(n,n));recompute();}
+  addSize('lab-lu',2,rebuild);
+  REFRESH.push(recompute);recompute();
+})();
+
+/*  4.2 QR  */
+(function(){
+  let A=[[2,1],[1,3]];
+  let gA=makeGrid(document.getElementById('qrA'),A,{onInput:recompute});
+  let gQ=makeGrid(document.getElementById('qrQ'),zeros(2,2),{editable:false});
+  let gR=makeGrid(document.getElementById('qrR'),zeros(2,2),{editable:false});
+  function recompute(){A=readGrid(gA);const r=M.qr(A);writeGrid(gQ,r.Q);writeGrid(gR,r.R);
+    const QtQ=M.mul(M.T(r.Q),r.Q);let ok=true;
+    for(let i=0;i<QtQ.length;i++)for(let j=0;j<QtQ.length;j++){const tt=i===j?1:0;if(Math.abs(QtQ[i][j]-tt)>1e-6)ok=false;}
+    const el=document.getElementById('qr-check');el.textContent=ok?t('s42_ok'):'—';el.style.color=ok?'#0f7a43':'';}
+  function rebuild(n){gA=gridEd('qrA',resizeData(readGrid(gA),n,(i,j)=>i===j?2:(i<j?1:0)),recompute);gQ=gridRO('qrQ',zeros(n,n));gR=gridRO('qrR',zeros(n,n));recompute();}
+  addSize('lab-qr',2,rebuild);
+  REFRESH.push(recompute);recompute();
+})();
+
+/*  4.3 SVD staged canvas  */
+(function(){
+  let A=[[2,0.6],[0.4,1.3]];
+  const cv=document.getElementById('svdCanvas'),cx=cv.getContext('2d');
+  const gA=makeGrid(document.getElementById('svdA'),A,{onInput:reset});
+  const W=cv.width,H=cv.height,ox=W/2,oy=H/2,sc=52;
+  let stage=0,curM=[[1,0],[0,1]],anim=null;
+  function svd(){const AtA=M.mul(M.T(A),A),e=M.eig2sym(AtA);
+    const s=[Math.sqrt(Math.max(0,e.vals[0])),Math.sqrt(Math.max(0,e.vals[1]))];
+    return{s,V:e.vecs};}
+  function stageMats(){const {s,V}=svd();
+    const Vt=[[V[0][0],V[0][1]],[V[1][0],V[1][1]]];
+    const SigVt=M.mul([[s[0],0],[0,s[1]]],Vt);
+    return[[[1,0],[0,1]],Vt,SigVt,A];}
+  const ap=(Mx,v)=>[Mx[0][0]*v[0]+Mx[0][1]*v[1],Mx[1][0]*v[0]+Mx[1][1]*v[1]];
+  const lerp=(P,Qm,t)=>P.map((r,i)=>r.map((x,j)=>x*(1-t)+Qm[i][j]*t));
+  function grid(){cx.clearRect(0,0,W,H);cx.strokeStyle='#eef1f6';
+    for(let i=-4;i<=4;i++){cx.beginPath();cx.moveTo(ox+i*sc,0);cx.lineTo(ox+i*sc,H);cx.stroke();
+      cx.beginPath();cx.moveTo(0,oy+i*sc);cx.lineTo(W,oy+i*sc);cx.stroke();}
+    cx.strokeStyle='#c3cbd9';cx.beginPath();cx.moveTo(0,oy);cx.lineTo(W,oy);cx.moveTo(ox,0);cx.lineTo(ox,H);cx.stroke();
+    cx.strokeStyle='#dfe4ee';cx.lineWidth=1;cx.beginPath();cx.arc(ox,oy,sc,0,7);cx.stroke();}
+  function arrow(v,col){cx.strokeStyle=col;cx.fillStyle=col;cx.lineWidth=3;
+    const ex=ox+v[0]*sc,ey=oy-v[1]*sc;cx.beginPath();cx.moveTo(ox,oy);cx.lineTo(ex,ey);cx.stroke();
+    const a=Math.atan2(-v[1],v[0]);cx.beginPath();cx.moveTo(ex,ey);
+    cx.lineTo(ex-11*Math.cos(a-0.4),ey-11*Math.sin(a-0.4));cx.lineTo(ex-11*Math.cos(a+0.4),ey-11*Math.sin(a+0.4));cx.closePath();cx.fill();}
+  function draw(Mx){grid();const {V}=svd();
+    cx.strokeStyle='#12995a';cx.fillStyle='rgba(18,153,90,.14)';cx.lineWidth=2.5;cx.beginPath();
+    for(let th=0;th<=6.30;th+=0.04){const p=ap(Mx,[Math.cos(th),Math.sin(th)]);
+      const sx=ox+p[0]*sc,sy=oy-p[1]*sc;if(th===0)cx.moveTo(sx,sy);else cx.lineTo(sx,sy);}cx.closePath();cx.fill();cx.stroke();
+    arrow(ap(Mx,V[0]),'#12995a');arrow(ap(Mx,V[1]),'#2a5bd7');}
+  function animateTo(target){if(anim)cancelAnimationFrame(anim);const start=curM.map(r=>r.slice()),t0=performance.now();
+    (function frame(now){const t=Math.min(1,(now-t0)/520);curM=lerp(start,target,t);draw(curM);
+      if(t<1)anim=requestAnimationFrame(frame);})(t0);}
+  function updReadout(){const {s}=svd();document.getElementById('svd-s1').textContent=fmt(s[0],3);
+    document.getElementById('svd-s2').textContent=fmt(s[1],3);
+    document.getElementById('svd-cond').textContent=s[1]>1e-9?fmt(s[0]/s[1],2):'∞';}
+  function setStage(i,animate){stage=i;const Ms=stageMats();
+    if(animate)animateTo(Ms[i]);else{curM=Ms[i].map(r=>r.slice());draw(curM);}
+    document.getElementById('svd-stage').innerHTML=t('s43_stage'+i);updReadout();}
+  function reset(){A=readGrid(gA);setStage(0,false);}
+  document.getElementById('svd-step').onclick=()=>setStage((stage+1)%4,true);
+  document.getElementById('svd-reset').onclick=()=>{A=readGrid(gA);setStage(0,true);};
+  REFRESH.push(()=>{document.getElementById('svd-stage').innerHTML=t('s43_stage'+stage);});
+  reset();
+})();
+
+/*  Quizzes make  */
+function buildQuizzes(){
+  const data=QUIZ[LANG]||QUIZ.en;
+  document.querySelectorAll('.quiz').forEach(box=>{
+    const key=box.dataset.quiz,d=data[key];if(!d)return;box.dataset.done='';
+    box.innerHTML=`<div class="q-tag">${t('qtag')}</div><div class="q-text">${d.q}</div>`;
+    const ex=document.createElement('div');ex.className='explain';ex.textContent=d.ex;
+    d.opts.forEach(([txt,correct])=>{const b=document.createElement('button');b.className='opt';b.textContent=txt;
+      b.onclick=()=>{if(box.dataset.done)return;box.dataset.done='1';
+        box.querySelectorAll('.opt').forEach(o=>o.disabled=true);b.classList.add(correct?'correct':'wrong');
+        if(!correct)box.querySelectorAll('.opt').forEach((o,i)=>{if(d.opts[i][1])o.classList.add('correct');});
+        ex.classList.add('show');};box.appendChild(b);});
+    box.appendChild(ex);});
+}
+
+/*  KaTeX import/render */
+function renderMath(){
+  document.querySelectorAll('.katex-inline').forEach(el=>{
+    if(el.dataset.done)return;try{katex.render(el.textContent,el,{throwOnError:false});el.dataset.done='1';}catch(e){}});
+  const setup=document.getElementById('setup-eq');
+  try{katex.render('[Q]=\\begin{bmatrix}17.249&0.439&0\\\\0.439&1.291&0\\\\0&0&0.875\\end{bmatrix}\\ \\text{Msi}',setup,{displayMode:true,throwOnError:false});}catch(e){}
+}
+
+/*  Boot  */
+setLang('en');
+window.addEventListener('load',()=>{if(window.katex)renderMath();else setTimeout(renderMath,400);});
+
+/*  Scroll-spy nav  */
+const links=[...document.querySelectorAll('nav.toc a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  links.forEach(l=>l.classList.remove('active'));
+  const a=links.find(l=>l.getAttribute('href')==='#'+e.target.id);if(a)a.classList.add('active');}});},
+  {rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
