@@ -1,0 +1,22 @@
+# macOS junk
+.DS_Store
+
+# Obsidian editor config
+.obsidian/
+
+# Dependencies (installed automatically by Render/Vercel)
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local environment files (secrets / config go in Render & Vercel dashboards instead)
+.env
+.env.local
+*.local

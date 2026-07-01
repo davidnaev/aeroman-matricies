@@ -1,0 +1,998 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[     41763,        988]
+NotebookOptionsPosition[     41272,        971]
+NotebookOutlinePosition[     41670,        987]
+CellTagsIndexPosition[     41627,        984]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"retention", "[", 
+    RowBox[{"epsEq_", ",", "epsD_", ",", "epsF_", ",", "k_"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "x", "}"}], ",", 
+     RowBox[{
+      RowBox[{"x", "=", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"epsEq", "-", "epsD"}], ")"}], "/", 
+        RowBox[{"(", 
+         RowBox[{"epsF", "-", "epsD"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"Exp", "[", 
+          RowBox[{
+           RowBox[{"-", "k"}], " ", "x"}], "]"}], "-", 
+         RowBox[{"Exp", "[", 
+          RowBox[{"-", "k"}], "]"}]}], ")"}], "/", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", 
+         RowBox[{"Exp", "[", 
+          RowBox[{"-", "k"}], "]"}]}], ")"}]}]}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"damageFactor", "[", 
+    RowBox[{"epsEq_", ",", "epsD_", ",", "epsF_", ",", "k_"}], "]"}], ":=", 
+   RowBox[{"Piecewise", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"1", ",", 
+         RowBox[{"epsEq", "<=", "epsD"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"retention", "[", 
+          RowBox[{"epsEq", ",", "epsD", ",", "epsF", ",", "k"}], "]"}], ",", 
+         RowBox[{"epsD", "<", "epsEq", "<=", "epsF"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"0", ",", 
+         RowBox[{"epsEq", ">", "epsF"}]}], "}"}]}], "}"}], ",", "0"}], 
+    "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"QPlaneStress", "[", 
+    RowBox[{"Emod_", ",", "nu_"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"Emod", "/", 
+     RowBox[{"(", 
+      RowBox[{"1", "-", 
+       RowBox[{"nu", "^", "2"}]}], ")"}]}], " ", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"1", ",", "nu", ",", "0"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"nu", ",", "1", ",", "0"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"0", ",", "0", ",", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"1", "-", "nu"}], ")"}], "/", "2"}]}], "}"}]}], "}"}]}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"strainVec", "[", 
+    RowBox[{"epsX_", ",", "epsY_", ",", "gamXY_"}], "]"}], ":=", 
+   RowBox[{"{", 
+    RowBox[{"epsX", ",", "epsY", ",", "gamXY"}], "}"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"equivalentStrain", "[", 
+    RowBox[{"epsX_", ",", "epsY_", ",", "gamXY_"}], "]"}], ":=", 
+   RowBox[{"Sqrt", "[", 
+    RowBox[{
+     RowBox[{"epsX", "^", "2"}], "+", 
+     RowBox[{"epsY", "^", "2"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"gamXY", "/", "2"}], ")"}], "^", "2"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"QEffective", "[", 
+    RowBox[{
+    "Emod_", ",", "nu_", ",", "epsX_", ",", "epsY_", ",", "gamXY_", ",", 
+     "epsD_", ",", "epsF_", ",", "k_"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsEq", ",", "R"}], "}"}], ",", 
+     RowBox[{
+      RowBox[{"epsEq", "=", 
+       RowBox[{"equivalentStrain", "[", 
+        RowBox[{"epsX", ",", "epsY", ",", "gamXY"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"R", "=", 
+       RowBox[{"damageFactor", "[", 
+        RowBox[{"epsEq", ",", "epsD", ",", "epsF", ",", "k"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"R", " ", 
+       RowBox[{"QPlaneStress", "[", 
+        RowBox[{"Emod", ",", "nu"}], "]"}]}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"stressVec", "[", 
+    RowBox[{
+    "Emod_", ",", "nu_", ",", "epsX_", ",", "epsY_", ",", "gamXY_", ",", 
+     "epsD_", ",", "epsF_", ",", "k_"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"Qeff", ",", "epsVec"}], "}"}], ",", 
+     RowBox[{
+      RowBox[{"Qeff", "=", 
+       RowBox[{"QEffective", "[", 
+        RowBox[{
+        "Emod", ",", "nu", ",", "epsX", ",", "epsY", ",", "gamXY", ",", 
+         "epsD", ",", "epsF", ",", "k"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"epsVec", "=", 
+       RowBox[{"strainVec", "[", 
+        RowBox[{"epsX", ",", "epsY", ",", "gamXY"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Qeff", ".", "epsVec"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"boundaryX", "[", 
+     RowBox[{"threshold_", ",", "epsY_", ",", "gamXY_"}], "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", "inside", "}"}], ",", 
+      RowBox[{
+       RowBox[{"inside", "=", 
+        RowBox[{
+         RowBox[{"threshold", "^", "2"}], "-", 
+         RowBox[{"epsY", "^", "2"}], "-", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"gamXY", "/", "2"}], ")"}], "^", "2"}]}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"inside", ">=", "0"}], ",", 
+         RowBox[{"Sqrt", "[", "inside", "]"}], ",", 
+         RowBox[{"Missing", "[", "\"\<AlreadyExceeded\>\"", "]"}]}], 
+        "]"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"validGridLines", "[", "vals_", "]"}], ":=", 
+    RowBox[{"DeleteCases", "[", 
+     RowBox[{"vals", ",", "_Missing"}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"matrixPanel", "[", 
+     RowBox[{
+     "Emod_", ",", "nu_", ",", "epsX_", ",", "epsY_", ",", "gamXY_", ",", 
+      "epsD_", ",", "epsF_", ",", "k_", ",", "area_"}], "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"epsF2", "=", 
+         RowBox[{"Max", "[", 
+          RowBox[{"epsF", ",", 
+           RowBox[{"epsD", "+", "0.0001"}]}], "]"}]}], ",", "epsVecNow", ",", 
+        "epsEqNow", ",", "RNow", ",", "Q0Now", ",", "QeffNow", ",", "sigNow", 
+        ",", "forceNow"}], "}"}], ",", 
+      RowBox[{
+       RowBox[{"epsVecNow", "=", 
+        RowBox[{"strainVec", "[", 
+         RowBox[{"epsX", ",", "epsY", ",", "gamXY"}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"epsEqNow", "=", 
+        RowBox[{"equivalentStrain", "[", 
+         RowBox[{"epsX", ",", "epsY", ",", "gamXY"}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"RNow", "=", 
+        RowBox[{"damageFactor", "[", 
+         RowBox[{"epsEqNow", ",", "epsD", ",", "epsF2", ",", "k"}], "]"}]}], ";",
+        "\[IndentingNewLine]", 
+       RowBox[{"Q0Now", "=", 
+        RowBox[{"QPlaneStress", "[", 
+         RowBox[{"Emod", ",", "nu"}], "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"QeffNow", "=", 
+        RowBox[{"RNow", " ", "Q0Now"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"sigNow", "=", 
+        RowBox[{"stressVec", "[", 
+         RowBox[{
+         "Emod", ",", "nu", ",", "epsX", ",", "epsY", ",", "gamXY", ",", 
+          "epsD", ",", "epsF2", ",", "k"}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"forceNow", "=", 
+        RowBox[{"area", " ", "sigNow"}]}], ";", "\[IndentingNewLine]", 
+       "\[IndentingNewLine]", 
+       RowBox[{"Grid", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<Strain vector\>\"", ",", "15", ",", "Bold"}], 
+              "]"}], ",", 
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"MatrixForm", "[", 
+                RowBox[{"Map", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{"#", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"9", ",", "5"}], "}"}]}], "]"}], "&"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"\"\<\[CurlyEpsilon]x\>\"", ",", 
+                    RowBox[{"epsVecNow", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<\[CurlyEpsilon]y\>\"", ",", 
+                    RowBox[{"epsVecNow", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<\[Gamma]xy\>\"", ",", 
+                    RowBox[{"epsVecNow", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], "}"}], ",", 
+                  RowBox[{"{", "2", "}"}]}], "]"}], "]"}], ",", "15", ",", 
+               "Bold"}], "]"}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              
+              RowBox[{"\"\<Undamaged stiffness matrix Q\>\"", ",", "15", ",", 
+               "Bold"}], "]"}], ",", 
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"MatrixForm", "[", 
+                RowBox[{"Map", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{"#", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"10", ",", "2"}], "}"}]}], "]"}], "&"}], ",", 
+                  "Q0Now", ",", 
+                  RowBox[{"{", "2", "}"}]}], "]"}], "]"}], ",", "15", ",", 
+               "Bold"}], "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              
+              RowBox[{"\"\<Effective damaged stiffness matrix Qeff = R Q\>\"",
+                ",", "15", ",", "Bold"}], "]"}], ",", 
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"MatrixForm", "[", 
+                RowBox[{"Map", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{"#", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"10", ",", "2"}], "}"}]}], "]"}], "&"}], ",", 
+                  "QeffNow", ",", 
+                  RowBox[{"{", "2", "}"}]}], "]"}], "]"}], ",", "15", ",", 
+               "Bold"}], "]"}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<Stress vector\>\"", ",", "15", ",", "Bold"}], 
+              "]"}], ",", 
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"MatrixForm", "[", 
+                RowBox[{"Map", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{"#", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"10", ",", "2"}], "}"}]}], "]"}], "&"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"\"\<\[Sigma]x\>\"", ",", 
+                    RowBox[{"sigNow", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<\[Sigma]y\>\"", ",", 
+                    RowBox[{"sigNow", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<\[Tau]xy\>\"", ",", 
+                    RowBox[{"sigNow", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], "}"}], ",", 
+                  RowBox[{"{", "2", "}"}]}], "]"}], "]"}], ",", "15", ",", 
+               " ", "Bold"}], "]"}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              
+              RowBox[{"\"\<Force / shear-resultant vector\>\"", ",", "15", ",",
+                "Bold"}], "]"}], ",", 
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"MatrixForm", "[", 
+                RowBox[{"Map", "[", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"NumberForm", "[", 
+                    RowBox[{"#", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"10", ",", "2"}], "}"}]}], "]"}], "&"}], ",", 
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"\"\<Fx = \[Sigma]x A\>\"", ",", 
+                    RowBox[{"forceNow", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<Fy = \[Sigma]y A\>\"", ",", 
+                    RowBox[{"forceNow", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"\"\<Vxy = \[Tau]xy A\>\"", ",", 
+                    RowBox[{"forceNow", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], "}"}], ",", 
+                  RowBox[{"{", "2", "}"}]}], "]"}], "]"}], ",", "15", ",", 
+               "Bold"}], "]"}]}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<Equivalent strain\>\"", ",", "15", ",", "Bold"}], 
+              "]"}], ",", 
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"NumberForm", "[", 
+                RowBox[{"epsEqNow", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"8", ",", "5"}], "}"}]}], "]"}], ",", "15", ",", 
+               "Bold"}], "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Style", "[", 
+              RowBox[{"\"\<Retention R\>\"", ",", "15", ",", "Bold"}], "]"}], 
+             ",", 
+             RowBox[{"Style", "[", 
+              RowBox[{
+               RowBox[{"NumberForm", "[", 
+                RowBox[{"RNow", ",", 
+                 RowBox[{"{", 
+                  RowBox[{"6", ",", "4"}], "}"}]}], "]"}], ",", "15", ",", 
+               "Bold"}], "]"}]}], "}"}]}], "}"}], ",", 
+         RowBox[{"Frame", "->", "All"}], ",", 
+         RowBox[{"ItemStyle", "->", "Automatic"}], ",", 
+         RowBox[{"Alignment", "->", "Center"}], ",", 
+         RowBox[{"Spacings", "->", 
+          RowBox[{"{", 
+           RowBox[{"2", ",", "1"}], "}"}]}]}], "]"}]}]}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"epsF2", "=", 
+        RowBox[{"Max", "[", 
+         RowBox[{"epsF", ",", 
+          RowBox[{"epsD", "+", "0.0001"}]}], "]"}]}], ",", "epsVecNow", ",", 
+       "epsEqNow", ",", "RNow", ",", "Q0Now", ",", "QeffNow", ",", "sigNow", ",",
+        "forceNow", ",", " ", "epsXD", ",", "epsXF", ",", "gridX"}], "}"}], ",", 
+     RowBox[{
+      RowBox[{"epsVecNow", "=", 
+       RowBox[{"strainVec", "[", 
+        RowBox[{"epsX", ",", "epsY", ",", "gamXY"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"epsXD", "=", 
+       RowBox[{"boundaryX", "[", 
+        RowBox[{"epsD", ",", "epsY", ",", "gamXY"}], "]"}]}], ";", "\n", 
+      "     ", 
+      RowBox[{"epsXF", "=", 
+       RowBox[{"boundaryX", "[", 
+        RowBox[{"epsF2", ",", "epsY", ",", "gamXY"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"gridX", "=", 
+       RowBox[{"validGridLines", "[", 
+        RowBox[{"{", 
+         RowBox[{"epsXD", ",", "epsXF"}], "}"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"epsEqNow", "=", 
+       RowBox[{"equivalentStrain", "[", 
+        RowBox[{"epsX", ",", "epsY", ",", "gamXY"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"RNow", "=", 
+       RowBox[{"damageFactor", "[", 
+        RowBox[{"epsEqNow", ",", "epsD", ",", "epsF2", ",", "k"}], "]"}]}], ";",
+       "\[IndentingNewLine]", 
+      RowBox[{"Q0Now", "=", 
+       RowBox[{"QPlaneStress", "[", 
+        RowBox[{"Emod", ",", "nu"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"QeffNow", "=", 
+       RowBox[{"RNow", " ", "Q0Now"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"sigNow", "=", 
+       RowBox[{"stressVec", "[", 
+        RowBox[{
+        "Emod", ",", "nu", ",", "epsX", ",", "epsY", ",", "gamXY", ",", 
+         "epsD", ",", "epsF2", ",", "k"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"forceNow", "=", 
+       RowBox[{"area", " ", "sigNow"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"Column", "[", 
+       RowBox[{
+        RowBox[{"{", "\[IndentingNewLine]", 
+         RowBox[{"Plot", "[", 
+          RowBox[{
+           RowBox[{"Evaluate", "[", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"stressVec", "[", 
+                RowBox[{
+                "Emod", ",", "nu", ",", "eps", ",", "epsY", ",", "gamXY", ",",
+                  "epsD", ",", "epsF2", ",", "k"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], ",", 
+              RowBox[{
+               RowBox[{"stressVec", "[", 
+                RowBox[{
+                "Emod", ",", "nu", ",", "eps", ",", "epsY", ",", "gamXY", ",",
+                  "epsD", ",", "epsF2", ",", "k"}], "]"}], "[", 
+               RowBox[{"[", "2", "]"}], "]"}], ",", 
+              RowBox[{
+               RowBox[{"stressVec", "[", 
+                RowBox[{
+                "Emod", ",", "nu", ",", "eps", ",", "epsY", ",", "gamXY", ",",
+                  "epsD", ",", "epsF2", ",", "k"}], "]"}], "[", 
+               RowBox[{"[", "3", "]"}], "]"}]}], "}"}], "]"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"eps", ",", "0", ",", "epsMax"}], "}"}], ",", 
+           RowBox[{"PlotLegends", "->", 
+            RowBox[{"{", 
+             
+             RowBox[{"\"\<\[Sigma]x\>\"", ",", "\"\<\[Sigma]y\>\"", 
+              ",", "\"\<\[Tau]xy\>\""}], "}"}]}], ",", "\[IndentingNewLine]", 
+           
+           RowBox[{"AxesLabel", "->", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"Style", "[", 
+               
+               RowBox[{"\"\<\[CurlyEpsilon]x swept, with \[CurlyEpsilon]y and \
+\[Gamma]xy fixed\>\"", ",", "15"}], "]"}], ",", "\[IndentingNewLine]", 
+              RowBox[{"Style", "[", 
+               RowBox[{"\"\<Stress components\>\"", ",", "15"}], "]"}]}], 
+             "}"}]}], ",", "\[IndentingNewLine]", 
+           RowBox[{"PlotLabel", "->", 
+            RowBox[{"Style", "[", 
+             
+             RowBox[{"\"\<2D Plane-Stress Matrix With Shear\>\"", ",", "15", ",",
+               "Bold"}], "]"}]}], ",", "\[IndentingNewLine]", 
+           RowBox[{"GridLines", "->", 
+            RowBox[{"{", 
+             RowBox[{"gridX", ",", "None"}], "}"}]}], "\[IndentingNewLine]", ",", 
+           RowBox[{"ImageSize", "->", "950"}], ",", 
+           RowBox[{"LabelStyle", "->", 
+            RowBox[{"Directive", "[", "15", "]"}]}]}], "]"}], "}"}], ",", 
+        RowBox[{"Spacings", "->", "2"}]}], "]"}]}]}], "]"}], ",", 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"Emod", ",", "70000", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Young's modulus E (MPa)\>\"", ",", "16"}], "]"}]}], 
+      "}"}], ",", "1000", ",", "250000", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"nu", ",", "0.3", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Poisson ratio \[Nu]\>\"", ",", "16"}], "]"}]}], "}"}], ",",
+      "0", ",", "0.50", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "Delimiter", ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsX", ",", "0.006", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Normal strain \[CurlyEpsilon]x\>\"", ",", "16"}], 
+        "]"}]}], "}"}], ",", 
+     RowBox[{"-", "0.05"}], ",", "0.08", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsY", ",", "0.000", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Normal strain \[CurlyEpsilon]y\>\"", ",", "16"}], 
+        "]"}]}], "}"}], ",", 
+     RowBox[{"-", "0.05"}], ",", "0.08", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"gamXY", ",", "0.000", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Engineering shear strain \[Gamma]xy\>\"", ",", "16"}], 
+        "]"}]}], "}"}], ",", 
+     RowBox[{"-", "0.05"}], ",", "0.08", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "Delimiter", ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsD", ",", "0.022", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Damage initiation equivalent strain \
+\[CurlyEpsilon]eq,d\>\"", ",", "16"}], "]"}]}], "}"}], ",", "0.001", ",", 
+     "0.11", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsF", ",", "0.05", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Failure equivalent strain \[Epsilon]eq,d\>\"", ",", 
+         "16"}], "]"}]}], "}"}], ",", "0.002", ",", "0.12", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"k", ",", "4", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Damage sharpness k\>\"", ",", "16"}], "]"}]}], "}"}], ",",
+      "0.2", ",", "25", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"area", ",", "1", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Area A\>\"", ",", "16"}], "]"}]}], "}"}], ",", "0.1", ",",
+      "10", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsMax", ",", "0.06", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Max plotted \[CurlyEpsilon]x\>\"", ",", "16"}], "]"}]}], 
+      "}"}], ",", "0.01", ",", "0.12", ",", 
+     RowBox[{"ImageSize", "->", "500"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   "Delimiter", ",", 
+   RowBox[{"Dynamic", "[", 
+    RowBox[{"matrixPanel", "[", 
+     RowBox[{
+     "Emod", ",", "nu", ",", "epsX", ",", "epsY", ",", "gamXY", ",", "epsD", ",",
+       "epsF", ",", "k", ",", "area"}], "]"}], "]"}], ",", 
+   RowBox[{"ControlPlacement", "->", "Right"}], ",", 
+   RowBox[{"SaveDefinitions", "->", "True"}]}], 
+  "]"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.991145253468474*^9, 3.9911454246855993`*^9}, {
+   3.991145461239162*^9, 3.991145467056509*^9}, {3.991145518292904*^9, 
+   3.99114556158624*^9}, {3.9911456216701727`*^9, 3.991145841608342*^9}, {
+   3.991145973000638*^9, 3.9911460065445757`*^9}, 3.9911461023375177`*^9, {
+   3.9911461836938334`*^9, 3.991146208499748*^9}, {3.991146249051032*^9, 
+   3.991146863777317*^9}, {3.991146896300148*^9, 3.991146900863131*^9}, {
+   3.99114694036889*^9, 3.9911469493715143`*^9}, 3.9911470252459784`*^9, {
+   3.99114705891446*^9, 3.9911470601276293`*^9}, {3.991147129010008*^9, 
+   3.991147147442688*^9}, {3.991147182903664*^9, 3.9911471858059483`*^9}, {
+   3.991147269067992*^9, 3.991147271030567*^9}, {3.991147313337879*^9, 
+   3.9911473153034563`*^9}, {3.99114737847054*^9, 3.991147378980555*^9}, {
+   3.991147416001767*^9, 3.991147449581347*^9}, {3.99114758064594*^9, 
+   3.991147588992504*^9}, {3.9911476418687363`*^9, 3.991147644174172*^9}, {
+   3.991147926399818*^9, 3.991147930131475*^9}, {3.991148159198552*^9, 
+   3.991148163701689*^9}, {3.991148196697977*^9, 3.9911482272665167`*^9}, {
+   3.991148270100416*^9, 3.991148314852625*^9}, {3.991148347085919*^9, 
+   3.991148456784069*^9}, {3.991148590771014*^9, 3.991148592953711*^9}, {
+   3.9911487855925503`*^9, 3.99114878711344*^9}, 3.9911489404314203`*^9},
+ CellLabel->
+  "In[746]:=",ExpressionUUID->"ef16cd2b-cb76-4d0e-b43c-afd068b7efc4"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`area$$ = 5.005, $CellContext`Emod$$ = 
+    70000, $CellContext`epsD$$ = 0.028800000000000003`, $CellContext`epsF$$ = 
+    0.0346, $CellContext`epsMax$$ = 
+    0.032100000000000004`, $CellContext`epsX$$ = 
+    0.0208, $CellContext`epsY$$ = -0.0194, $CellContext`gamXY$$ = 
+    0.029500000000000002`, $CellContext`k$$ = 9.13, $CellContext`nu$$ = 0.3, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`Emod$$], 70000, 
+       Style["Young's modulus E (MPa)", 16]}, 1000, 250000, ControlType -> 
+      Manipulator}, {{
+       Hold[$CellContext`nu$$], 0.3, 
+       Style["Poisson ratio \[Nu]", 16]}, 0, 0.5, ControlType -> 
+      Manipulator}, {{
+       Hold[$CellContext`epsX$$], 0.006, 
+       Style["Normal strain \[CurlyEpsilon]x", 16]}, -0.05, 0.08, ControlType -> 
+      Manipulator}, {{
+       Hold[$CellContext`epsY$$], 0., 
+       Style["Normal strain \[CurlyEpsilon]y", 16]}, -0.05, 0.08, ControlType -> 
+      Manipulator}, {{
+       Hold[$CellContext`gamXY$$], 0., 
+       Style["Engineering shear strain \[Gamma]xy", 16]}, -0.05, 0.08, 
+      ControlType -> Manipulator}, {{
+       Hold[$CellContext`epsD$$], 0.022, 
+       Style["Damage initiation equivalent strain \[CurlyEpsilon]eq,d", 16]}, 
+      0.001, 0.11, ControlType -> Manipulator}, {{
+       Hold[$CellContext`epsF$$], 0.05, 
+       Style["Failure equivalent strain \[Epsilon]eq,d", 16]}, 0.002, 0.12, 
+      ControlType -> Manipulator}, {{
+       Hold[$CellContext`k$$], 4, 
+       Style["Damage sharpness k", 16]}, 0.2, 25, ControlType -> 
+      Manipulator}, {{
+       Hold[$CellContext`area$$], 1, 
+       Style["Area A", 16]}, 0.1, 10, ControlType -> Manipulator}, {{
+       Hold[$CellContext`epsMax$$], 0.06, 
+       Style["Max plotted \[CurlyEpsilon]x", 16]}, 0.01, 0.12, ControlType -> 
+      Manipulator}, {
+      Hold[
+       Dynamic[
+        $CellContext`matrixPanel[$CellContext`Emod$$, $CellContext`nu$$, \
+$CellContext`epsX$$, $CellContext`epsY$$, $CellContext`gamXY$$, \
+$CellContext`epsD$$, $CellContext`epsF$$, $CellContext`k$$, \
+$CellContext`area$$]]], Manipulate`Dump`ThisIsNotAControl, ControlType -> 
+      None}}, Typeset`size$$ = {
+    1014.3650390625, {229.89826323410094`, 235.63019682785094`}}, 
+    Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = False, 
+    Typeset`keyframeActionsQ$$ = False, Typeset`keyframeList$$ = {}}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`area$$ = 1, $CellContext`Emod$$ = 
+        70000, $CellContext`epsD$$ = 0.022, $CellContext`epsF$$ = 
+        0.05, $CellContext`epsMax$$ = 0.06, $CellContext`epsX$$ = 
+        0.006, $CellContext`epsY$$ = 0., $CellContext`gamXY$$ = 
+        0., $CellContext`k$$ = 4, $CellContext`nu$$ = 0.3}, 
+      "ControllerVariables" :> {}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$, Typeset`keyframeActionsQ$$, 
+        Typeset`keyframeList$$}, "Body" :> 
+      Module[{$CellContext`epsF2$ = 
+         Max[$CellContext`epsF$$, $CellContext`epsD$$ + 
+           0.0001], $CellContext`epsVecNow$, $CellContext`epsEqNow$, \
+$CellContext`RNow$, $CellContext`Q0Now$, $CellContext`QeffNow$, \
+$CellContext`sigNow$, $CellContext`forceNow$, $CellContext`epsXD$, \
+$CellContext`epsXF$, $CellContext`gridX$}, $CellContext`epsVecNow$ = \
+$CellContext`strainVec[$CellContext`epsX$$, $CellContext`epsY$$, \
+$CellContext`gamXY$$]; $CellContext`epsXD$ = \
+$CellContext`boundaryX[$CellContext`epsD$$, $CellContext`epsY$$, \
+$CellContext`gamXY$$]; $CellContext`epsXF$ = \
+$CellContext`boundaryX[$CellContext`epsF2$, $CellContext`epsY$$, \
+$CellContext`gamXY$$]; $CellContext`gridX$ = \
+$CellContext`validGridLines[{$CellContext`epsXD$, $CellContext`epsXF$}]; \
+$CellContext`epsEqNow$ = $CellContext`equivalentStrain[$CellContext`epsX$$, \
+$CellContext`epsY$$, $CellContext`gamXY$$]; $CellContext`RNow$ = \
+$CellContext`damageFactor[$CellContext`epsEqNow$, $CellContext`epsD$$, \
+$CellContext`epsF2$, $CellContext`k$$]; $CellContext`Q0Now$ = \
+$CellContext`QPlaneStress[$CellContext`Emod$$, $CellContext`nu$$]; \
+$CellContext`QeffNow$ = $CellContext`RNow$ $CellContext`Q0Now$; \
+$CellContext`sigNow$ = $CellContext`stressVec[$CellContext`Emod$$, \
+$CellContext`nu$$, $CellContext`epsX$$, $CellContext`epsY$$, \
+$CellContext`gamXY$$, $CellContext`epsD$$, $CellContext`epsF2$, \
+$CellContext`k$$]; $CellContext`forceNow$ = $CellContext`area$$ \
+$CellContext`sigNow$; Column[{
+           Plot[
+            Evaluate[{
+              Part[
+               $CellContext`stressVec[$CellContext`Emod$$, $CellContext`nu$$, \
+$CellContext`eps, $CellContext`epsY$$, $CellContext`gamXY$$, \
+$CellContext`epsD$$, $CellContext`epsF2$, $CellContext`k$$], 1], 
+              Part[
+               $CellContext`stressVec[$CellContext`Emod$$, $CellContext`nu$$, \
+$CellContext`eps, $CellContext`epsY$$, $CellContext`gamXY$$, \
+$CellContext`epsD$$, $CellContext`epsF2$, $CellContext`k$$], 2], 
+              Part[
+               $CellContext`stressVec[$CellContext`Emod$$, $CellContext`nu$$, \
+$CellContext`eps, $CellContext`epsY$$, $CellContext`gamXY$$, \
+$CellContext`epsD$$, $CellContext`epsF2$, $CellContext`k$$], 
+               3]}], {$CellContext`eps, 0, $CellContext`epsMax$$}, 
+            PlotLegends -> {"\[Sigma]x", "\[Sigma]y", "\[Tau]xy"}, AxesLabel -> {
+              Style[
+              "\[CurlyEpsilon]x swept, with \[CurlyEpsilon]y and \[Gamma]xy \
+fixed", 15], 
+              Style["Stress components", 15]}, PlotLabel -> 
+            Style["2D Plane-Stress Matrix With Shear", 15, Bold], 
+            GridLines -> {$CellContext`gridX$, None}, ImageSize -> 950, 
+            LabelStyle -> Directive[15]]}, Spacings -> 2]], 
+      "Specifications" :> {{{$CellContext`Emod$$, 70000, 
+          Style["Young's modulus E (MPa)", 16]}, 1000, 250000, ImageSize -> 
+         500}, {{$CellContext`nu$$, 0.3, 
+          Style["Poisson ratio \[Nu]", 16]}, 0, 0.5, ImageSize -> 500}, 
+        Delimiter, {{$CellContext`epsX$$, 0.006, 
+          Style["Normal strain \[CurlyEpsilon]x", 16]}, -0.05, 0.08, 
+         ImageSize -> 500}, {{$CellContext`epsY$$, 0., 
+          Style["Normal strain \[CurlyEpsilon]y", 16]}, -0.05, 0.08, 
+         ImageSize -> 500}, {{$CellContext`gamXY$$, 0., 
+          Style["Engineering shear strain \[Gamma]xy", 16]}, -0.05, 0.08, 
+         ImageSize -> 500}, Delimiter, {{$CellContext`epsD$$, 0.022, 
+          Style[
+          "Damage initiation equivalent strain \[CurlyEpsilon]eq,d", 16]}, 
+         0.001, 0.11, ImageSize -> 500}, {{$CellContext`epsF$$, 0.05, 
+          Style["Failure equivalent strain \[Epsilon]eq,d", 16]}, 0.002, 0.12,
+          ImageSize -> 500}, {{$CellContext`k$$, 4, 
+          Style["Damage sharpness k", 16]}, 0.2, 25, ImageSize -> 
+         500}, {{$CellContext`area$$, 1, 
+          Style["Area A", 16]}, 0.1, 10, ImageSize -> 
+         500}, {{$CellContext`epsMax$$, 0.06, 
+          Style["Max plotted \[CurlyEpsilon]x", 16]}, 0.01, 0.12, ImageSize -> 
+         500}, Delimiter, 
+        Dynamic[
+         $CellContext`matrixPanel[$CellContext`Emod$$, $CellContext`nu$$, \
+$CellContext`epsX$$, $CellContext`epsY$$, $CellContext`gamXY$$, \
+$CellContext`epsD$$, $CellContext`epsF$$, $CellContext`k$$, \
+$CellContext`area$$]]}, "Options" :> {ControlPlacement -> Right}, 
+      "DefaultOptions" :> {}],
+     ImageSizeCache->{1875.099453125, {260.66868864914, 266.40062224289}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    Initialization:>({$CellContext`strainVec[
+         Pattern[$CellContext`epsX, 
+          Blank[]], 
+         Pattern[$CellContext`epsY, 
+          Blank[]], 
+         Pattern[$CellContext`gamXY, 
+          
+          Blank[]]] := {$CellContext`epsX, $CellContext`epsY, \
+$CellContext`gamXY}, $CellContext`boundaryX[
+         Pattern[$CellContext`threshold, 
+          Blank[]], 
+         Pattern[$CellContext`epsY, 
+          Blank[]], 
+         Pattern[$CellContext`gamXY, 
+          Blank[]]] := 
+       Module[{$CellContext`inside}, $CellContext`inside = \
+$CellContext`threshold^2 - $CellContext`epsY^2 - ($CellContext`gamXY/2)^2; 
+         If[$CellContext`inside >= 0, 
+           Sqrt[$CellContext`inside], 
+           Missing["AlreadyExceeded"]]], $CellContext`validGridLines[
+         Pattern[$CellContext`vals, 
+          Blank[]]] := DeleteCases[$CellContext`vals, 
+         Blank[Missing]], $CellContext`equivalentStrain[
+         Pattern[$CellContext`epsX, 
+          Blank[]], 
+         Pattern[$CellContext`epsY, 
+          Blank[]], 
+         Pattern[$CellContext`gamXY, 
+          Blank[]]] := 
+       Sqrt[$CellContext`epsX^2 + $CellContext`epsY^2 + ($CellContext`gamXY/
+           2)^2], $CellContext`damageFactor[
+         Pattern[$CellContext`epsEq, 
+          Blank[]], 
+         Pattern[$CellContext`epsD, 
+          Blank[]], 
+         Pattern[$CellContext`epsF, 
+          Blank[]], 
+         Pattern[$CellContext`k, 
+          Blank[]]] := 
+       Piecewise[{{1, $CellContext`epsEq <= $CellContext`epsD}, {
+           $CellContext`retention[$CellContext`epsEq, $CellContext`epsD, \
+$CellContext`epsF, $CellContext`k], 
+           
+           Inequality[$CellContext`epsD, Less, $CellContext`epsEq, 
+            LessEqual, $CellContext`epsF]}, {
+          0, $CellContext`epsEq > $CellContext`epsF}}, 
+         0], $CellContext`retention[
+         Pattern[$CellContext`epsEq, 
+          Blank[]], 
+         Pattern[$CellContext`epsD, 
+          Blank[]], 
+         Pattern[$CellContext`epsF, 
+          Blank[]], 
+         Pattern[$CellContext`k, 
+          Blank[]]] := 
+       Module[{$CellContext`x}, $CellContext`x = ($CellContext`epsEq - \
+$CellContext`epsD)/($CellContext`epsF - $CellContext`epsD); (
+           Exp[(-$CellContext`k) $CellContext`x] - Exp[-$CellContext`k])/(1 - 
+          Exp[-$CellContext`k])], $CellContext`QPlaneStress[
+         Pattern[$CellContext`Emod, 
+          Blank[]], 
+         Pattern[$CellContext`nu, 
+          Blank[]]] := ($CellContext`Emod/(
+         1 - $CellContext`nu^2)) {{
+          1, $CellContext`nu, 0}, {$CellContext`nu, 1, 0}, {
+          0, 0, (1 - $CellContext`nu)/2}}, $CellContext`stressVec[
+         Pattern[$CellContext`Emod, 
+          Blank[]], 
+         Pattern[$CellContext`nu, 
+          Blank[]], 
+         Pattern[$CellContext`epsX, 
+          Blank[]], 
+         Pattern[$CellContext`epsY, 
+          Blank[]], 
+         Pattern[$CellContext`gamXY, 
+          Blank[]], 
+         Pattern[$CellContext`epsD, 
+          Blank[]], 
+         Pattern[$CellContext`epsF, 
+          Blank[]], 
+         Pattern[$CellContext`k, 
+          Blank[]]] := 
+       Module[{$CellContext`Qeff, $CellContext`epsVec}, $CellContext`Qeff = \
+$CellContext`QEffective[$CellContext`Emod, $CellContext`nu, \
+$CellContext`epsX, $CellContext`epsY, $CellContext`gamXY, $CellContext`epsD, \
+$CellContext`epsF, $CellContext`k]; $CellContext`epsVec = \
+$CellContext`strainVec[$CellContext`epsX, $CellContext`epsY, \
+$CellContext`gamXY]; 
+         Dot[$CellContext`Qeff, $CellContext`epsVec]], $CellContext`QEffective[
+         Pattern[$CellContext`Emod, 
+          Blank[]], 
+         Pattern[$CellContext`nu, 
+          Blank[]], 
+         Pattern[$CellContext`epsX, 
+          Blank[]], 
+         Pattern[$CellContext`epsY, 
+          Blank[]], 
+         Pattern[$CellContext`gamXY, 
+          Blank[]], 
+         Pattern[$CellContext`epsD, 
+          Blank[]], 
+         Pattern[$CellContext`epsF, 
+          Blank[]], 
+         Pattern[$CellContext`k, 
+          Blank[]]] := 
+       Module[{$CellContext`epsEq, $CellContext`R}, $CellContext`epsEq = \
+$CellContext`equivalentStrain[$CellContext`epsX, $CellContext`epsY, \
+$CellContext`gamXY]; $CellContext`R = \
+$CellContext`damageFactor[$CellContext`epsEq, $CellContext`epsD, \
+$CellContext`epsF, $CellContext`k]; $CellContext`R \
+$CellContext`QPlaneStress[$CellContext`Emod, $CellContext`nu]], \
+$CellContext`matrixPanel[
+         Pattern[$CellContext`Emod, 
+          Blank[]], 
+         Pattern[$CellContext`nu, 
+          Blank[]], 
+         Pattern[$CellContext`epsX, 
+          Blank[]], 
+         Pattern[$CellContext`epsY, 
+          Blank[]], 
+         Pattern[$CellContext`gamXY, 
+          Blank[]], 
+         Pattern[$CellContext`epsD, 
+          Blank[]], 
+         Pattern[$CellContext`epsF, 
+          Blank[]], 
+         Pattern[$CellContext`k, 
+          Blank[]], 
+         Pattern[$CellContext`area, 
+          Blank[]]] := 
+       Module[{$CellContext`epsF2 = 
+          Max[$CellContext`epsF, $CellContext`epsD + 
+            0.0001], $CellContext`epsVecNow, $CellContext`epsEqNow, \
+$CellContext`RNow, $CellContext`Q0Now, $CellContext`QeffNow, \
+$CellContext`sigNow, $CellContext`forceNow}, $CellContext`epsVecNow = \
+$CellContext`strainVec[$CellContext`epsX, $CellContext`epsY, \
+$CellContext`gamXY]; $CellContext`epsEqNow = \
+$CellContext`equivalentStrain[$CellContext`epsX, $CellContext`epsY, \
+$CellContext`gamXY]; $CellContext`RNow = \
+$CellContext`damageFactor[$CellContext`epsEqNow, $CellContext`epsD, \
+$CellContext`epsF2, $CellContext`k]; $CellContext`Q0Now = \
+$CellContext`QPlaneStress[$CellContext`Emod, $CellContext`nu]; \
+$CellContext`QeffNow = $CellContext`RNow $CellContext`Q0Now; \
+$CellContext`sigNow = $CellContext`stressVec[$CellContext`Emod, \
+$CellContext`nu, $CellContext`epsX, $CellContext`epsY, $CellContext`gamXY, \
+$CellContext`epsD, $CellContext`epsF2, $CellContext`k]; $CellContext`forceNow = \
+$CellContext`area $CellContext`sigNow; Grid[{{
+             Style["Strain vector", 15, Bold], 
+             Style[
+              MatrixForm[
+               Map[NumberForm[#, {9, 5}]& , {{"\[CurlyEpsilon]x", 
+                  Part[$CellContext`epsVecNow, 1]}, {"\[CurlyEpsilon]y", 
+                  Part[$CellContext`epsVecNow, 2]}, {"\[Gamma]xy", 
+                  Part[$CellContext`epsVecNow, 3]}}, {2}]], 15, Bold]}, {
+             Style["Undamaged stiffness matrix Q", 15, Bold], 
+             Style[
+              MatrixForm[
+               Map[NumberForm[#, {10, 2}]& , $CellContext`Q0Now, {2}]], 15, 
+              Bold]}, {
+             Style["Effective damaged stiffness matrix Qeff = R Q", 15, Bold], 
+             Style[
+              MatrixForm[
+               Map[NumberForm[#, {10, 2}]& , $CellContext`QeffNow, {2}]], 15, 
+              Bold]}, {
+             Style["Stress vector", 15, Bold], 
+             Style[
+              MatrixForm[
+               Map[NumberForm[#, {10, 2}]& , {{"\[Sigma]x", 
+                  Part[$CellContext`sigNow, 1]}, {"\[Sigma]y", 
+                  Part[$CellContext`sigNow, 2]}, {"\[Tau]xy", 
+                  Part[$CellContext`sigNow, 3]}}, {2}]], 15, Bold]}, {
+             Style["Force / shear-resultant vector", 15, Bold], 
+             Style[
+              MatrixForm[
+               Map[NumberForm[#, {10, 2}]& , {{"Fx = \[Sigma]x A", 
+                  Part[$CellContext`forceNow, 1]}, {"Fy = \[Sigma]y A", 
+                  Part[$CellContext`forceNow, 2]}, {"Vxy = \[Tau]xy A", 
+                  Part[$CellContext`forceNow, 3]}}, {2}]], 15, Bold]}, {
+             Style["Equivalent strain", 15, Bold], 
+             Style[
+              NumberForm[$CellContext`epsEqNow, {8, 5}], 15, Bold]}, {
+             Style["Retention R", 15, Bold], 
+             Style[
+              NumberForm[$CellContext`RNow, {6, 4}], 15, Bold]}}, Frame -> 
+           All, ItemStyle -> Automatic, Alignment -> Center, 
+           Spacings -> {2, 1}]]}; Typeset`initDone$$ = True),
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{3.991147665503622*^9, 3.991147961865501*^9, 
+  3.99114836544585*^9, 3.991148414896933*^9, 3.991148615881689*^9, 
+  3.9911487875030317`*^9, 3.9911489447313013`*^9},
+ CellLabel->
+  "Out[757]=",ExpressionUUID->"7daad720-d7f4-4ad6-aab7-1438ca74b739"]
+}, Open  ]]
+},
+WindowSize->{Full, Full},
+WindowMargins->{{Automatic, -1027}, {Automatic, -55}},
+FrontEndVersion->"14.3 for Mac OS X ARM (64-bit) (July 8, 2025)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"edbb3059-1562-490d-80f1-257d75938eae"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[576, 22, 24217, 603, 1377, "Input",ExpressionUUID->"ef16cd2b-cb76-4d0e-b43c-afd068b7efc4"],
+Cell[24796, 627, 16460, 341, 544, "Output",ExpressionUUID->"7daad720-d7f4-4ad6-aab7-1438ca74b739"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+

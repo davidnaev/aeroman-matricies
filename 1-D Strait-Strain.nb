@@ -1,0 +1,461 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Wolfram 14.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       154,          7]
+NotebookDataLength[     18756,        451]
+NotebookOptionsPosition[     18271,        434]
+NotebookOutlinePosition[     18665,        450]
+CellTagsIndexPosition[     18622,        447]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}], ";"}], "\n", 
+  RowBox[{"(*", 
+   RowBox[{
+   "Initial", " ", "function", " ", "Of", " ", "remaining", " ", "load", " ", 
+    "carrying", " ", "capacity", " ", "factor"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"ReFunction", "[", 
+     RowBox[{"eps_", ",", "epsD_", ",", "epsF_", ",", "k_"}], "]"}], ":=", 
+    " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", "x", "}"}], ",", 
+      RowBox[{
+       RowBox[{"x", "=", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"eps", "-", "epsD"}], ")"}], "/", 
+         RowBox[{"(", 
+          RowBox[{"epsF", "-", "epsD"}], ")"}]}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"Exp", "[", 
+           RowBox[{
+            RowBox[{"-", "k"}], " ", "x"}], "]"}], "-", 
+          RowBox[{"Exp", "[", 
+           RowBox[{"-", "k"}], "]"}]}], ")"}], "/", 
+        RowBox[{"(", 
+         RowBox[{"1", "-", 
+          RowBox[{"Exp", "[", 
+           RowBox[{"-", "k"}], "]"}]}], ")"}]}]}]}], "]"}]}], ";"}], "\n", 
+  RowBox[{"(*", 
+   RowBox[{
+   "Stress", " ", "function", " ", "as", " ", "piecewise", " ", "of", " ", 
+    "different", " ", "strain", " ", "points"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"stress", "[", 
+     RowBox[{"eps_", ",", "Emod_", ",", "epsD_", ",", "epsF_", ",", "k_"}], 
+     "]"}], ":=", "\[IndentingNewLine]", 
+    RowBox[{"Piecewise", "[", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"Emod", " ", "eps"}], ",", 
+          RowBox[{"0", "<=", "eps", "<=", "epsD"}]}], "}"}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"ReFunction", "[", 
+            RowBox[{"eps", ",", "epsD", ",", "epsF", ",", "k"}], "]"}], " ", 
+           "Emod", " ", "eps"}], ",", 
+          RowBox[{"epsD", "<", "eps", "<=", "epsF"}]}], "}"}], ",", 
+        "\[IndentingNewLine]", 
+        RowBox[{"{", 
+         RowBox[{"0", ",", 
+          RowBox[{"eps", ">", "epsF"}]}], "}"}]}], "}"}], ",", "0"}], "]"}]}],
+    ";"}], "\[IndentingNewLine]"}], "\n", 
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Module", "[", "\[IndentingNewLine]", 
+    RowBox[{"(*", 
+     RowBox[{
+     "Variable", " ", "assignation", " ", "and", " ", "limitation", " ", "of",
+       " ", "stress", " ", "fracture", " ", "up", " ", "to", " ", 
+      "negligable", " ", "amount", " ", "above", " ", "damage"}], "*)"}], 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"epsD2", "=", "epsD"}], ",", 
+       RowBox[{"epsF2", "=", 
+        RowBox[{"Max", "[", 
+         RowBox[{"epsF", ",", 
+          RowBox[{"epsD", "+", "0.0001"}]}], "]"}]}], ",", "sigNow"}], "}"}], 
+     "\[IndentingNewLine]", ",", 
+     RowBox[{
+      RowBox[{"sigNow", "=", 
+       RowBox[{"stress", "[", 
+        RowBox[{"epsNow", ",", "Emod", ",", "epsD2", ",", "epsF2", ",", "k"}],
+         "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"Column", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Plot", "[", 
+          RowBox[{
+           RowBox[{"stress", "[", 
+            RowBox[{
+            "eps", ",", "Emod", ",", "epsD2", ",", "epsF2", ",", "k"}], "]"}],
+            ",", "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{"eps", ",", "0", ",", "epsMax"}], "}"}], ",", 
+           RowBox[{"PlotRange", "->", 
+            RowBox[{"{", 
+             RowBox[{"0", ",", "All"}], "}"}]}], ",", "\[IndentingNewLine]", 
+           RowBox[{"AxesLabel", "->", 
+            RowBox[{"{", 
+             
+             RowBox[{"\"\<Strain \[Epsilon]\>\"", 
+              ",", "\"\<Stress \[Sigma]\>\""}], "}"}]}], ",", 
+           RowBox[{"LabelStyle", "->", 
+            RowBox[{"Directive", "[", 
+             RowBox[{"Bold", ",", " ", "15"}], "]"}]}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{
+           "PlotLabel", 
+            "->", "\"\<Same-Axis Elastic-Damage Stress-Strain Curve\>\""}], ",", 
+           RowBox[{"LabelStyle", "->", 
+            RowBox[{"Directive", "[", 
+             RowBox[{"Bold", ",", " ", "15"}], "]"}]}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"GridLines", "->", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{"epsD2", ",", "epsF2"}], "}"}], ",", "None"}], "}"}]}],
+            ",", "\[IndentingNewLine]", 
+           RowBox[{"ImageSize", "->", 
+            RowBox[{"9", "^", "3"}]}], ",", 
+           RowBox[{"Epilog", "->", 
+            RowBox[{"{", 
+             RowBox[{"Red", ",", 
+              RowBox[{"PointSize", "[", "0.02", "]"}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"Point", "[", 
+               RowBox[{"{", 
+                RowBox[{"epsNow", ",", "sigNow"}], "}"}], "]"}], ",", "Green",
+               ",", "Dashed", ",", "\[IndentingNewLine]", 
+              RowBox[{"Line", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"epsD2", ",", "0"}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"epsD2", ",", 
+                   RowBox[{"Emod", " ", "epsD2"}]}], "}"}]}], "}"}], "]"}], ",",
+               "Red", ",", "Dashed", ",", 
+              RowBox[{"Line", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"{", 
+                  RowBox[{"epsF2", ",", "0"}], "}"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{"epsF2", ",", 
+                   RowBox[{"Emod", " ", "epsD2"}]}], "}"}]}], "}"}], "]"}]}], 
+             "}"}]}]}], "]"}], ",", "\[IndentingNewLine]", 
+         RowBox[{"Grid", "[", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{"\"\<Current strain \[Epsilon]\>\"", ",", "12"}], 
+                "]"}], ",", 
+               RowBox[{"Style", "[", 
+                RowBox[{
+                 RowBox[{"NumberForm", "[", 
+                  RowBox[{"epsNow", ",", 
+                   RowBox[{"{", 
+                    RowBox[{"5", ",", "4"}], "}"}]}], "]"}], ",", "12"}], 
+                "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{"\"\<Current stress \[Sigma]\>\"", ",", "12"}], "]"}],
+                ",", 
+               RowBox[{"Style", "[", 
+                RowBox[{
+                 RowBox[{"NumberForm", "[", 
+                  RowBox[{"sigNow", ",", 
+                   RowBox[{"{", 
+                    RowBox[{"7", ",", "2"}], "}"}]}], "]"}], ",", "12"}], 
+                "]"}], ",", 
+               RowBox[{"Style", "[", 
+                RowBox[{"\"\<MPa\>\"", ",", "12"}], "]"}]}], "}"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                
+                RowBox[{"\"\<Damage initiation strain \[Epsilon]d\>\"", ",", 
+                 "12"}], "]"}], ",", 
+               RowBox[{"Style", "[", 
+                RowBox[{
+                 RowBox[{"NumberForm", "[", 
+                  RowBox[{"epsD2", ",", 
+                   RowBox[{"{", 
+                    RowBox[{"5", ",", "4"}], "}"}]}], "]"}], ",", "12"}], 
+                "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                
+                RowBox[{"\"\<Failure strain \[Epsilon]f\>\"", ",", " ", 
+                 "12"}], "]"}], ",", 
+               RowBox[{"Style", "[", 
+                RowBox[{
+                 RowBox[{"NumberForm", "[", 
+                  RowBox[{"epsF2", ",", 
+                   RowBox[{"{", 
+                    RowBox[{"5", ",", "4"}], "}"}]}], "]"}], ",", "12"}], 
+                "]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Style", "[", 
+                RowBox[{"\"\<Damage sharpness k\>\"", ",", "12"}], "]"}], ",", 
+               RowBox[{"Style", "[", 
+                RowBox[{
+                 RowBox[{"NumberForm", "[", 
+                  RowBox[{"k", ",", 
+                   RowBox[{"{", 
+                    RowBox[{"5", ",", "2"}], "}"}]}], "]"}], ",", "12"}], 
+                "]"}]}], "}"}]}], "}"}], ",", 
+           RowBox[{"ItemSize", "->", "Automatic"}], ",", 
+           RowBox[{"Frame", "->", "All"}]}], "]"}]}], "}"}], "]"}]}]}], "]"}],
+    ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"Emod", ",", "70000", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<Young's modulus E (MPa)\>\"", ",", "12"}], "]"}]}], 
+      "}"}], ",", "\[IndentingNewLine]", "1000", ",", "250000", ",", 
+     RowBox[{"ImageSize", "->", "250"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsD", ",", "0.012", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<damage initiation strain \[Epsilon]d\>\"", ",", "12"}], 
+        "]"}]}], "}"}], ",", "\[IndentingNewLine]", "0.001", ",", "0.04", ",", 
+     RowBox[{"ImageSize", "->", "250"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsF", ",", "0.018", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<failure strain \[Epsilon]f\>\"", ",", "12"}], "]"}]}], 
+      "}"}], ",", "\[IndentingNewLine]", "0.002", ",", "0.08", ",", 
+     RowBox[{"ImageSize", "->", "250"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"k", ",", "4", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<damage sharpness k\>\"", ",", "12"}], "]"}]}], "}"}], ",",
+      "\[IndentingNewLine]", "0.2", ",", "20", ",", 
+     RowBox[{"ImageSize", "->", "250"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsNow", ",", "0.005", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<current strain \[Epsilon]\>\"", ",", "12"}], "]"}]}], 
+      "}"}], ",", "\[IndentingNewLine]", "0", ",", "0.08", ",", 
+     RowBox[{"ImageSize", "->", "250"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"epsMax", ",", "0.05", ",", 
+       RowBox[{"Style", "[", 
+        RowBox[{"\"\<max plotted strain\>\"", ",", "12"}], "]"}]}], "}"}], ",",
+      "\[IndentingNewLine]", "0.01", ",", "0.12", ",", 
+     RowBox[{"ImageSize", "->", "250"}]}], "}"}], ",", 
+   RowBox[{"ControlPlacement", "->", "Right"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.9911362680755777`*^9, 3.991136398499016*^9}, {
+   3.991136432118178*^9, 3.9911366209986486`*^9}, {3.991136720107152*^9, 
+   3.991136733147895*^9}, {3.991136813508003*^9, 3.991136816448737*^9}, 
+   3.991136884458467*^9, {3.9911369320950737`*^9, 3.991137084056123*^9}, {
+   3.9911371357652693`*^9, 3.991137191856139*^9}, {3.991137265957995*^9, 
+   3.991137288578641*^9}, {3.99113739806798*^9, 3.991137408773293*^9}, {
+   3.9911374817379827`*^9, 3.991137512230359*^9}, {3.9911375698995028`*^9, 
+   3.991137742440394*^9}, {3.9911378744550457`*^9, 3.991137882880694*^9}, {
+   3.99113803193988*^9, 3.9911380904871597`*^9}, {3.991138168221529*^9, 
+   3.991138264910775*^9}, {3.9911383069902487`*^9, 3.991138317875108*^9}, {
+   3.991138350427187*^9, 3.991138370000201*^9}, {3.991138459816101*^9, 
+   3.991138904187752*^9}, {3.991140988495349*^9, 3.991140991483553*^9}},
+ CellLabel->
+  "In[1736]:=",ExpressionUUID->"b8951f63-3ffa-406a-ae07-8f36c357493b"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`Emod$$ = 70000, $CellContext`epsD$$ = 
+    0.012, $CellContext`epsF$$ = 0.018, $CellContext`epsMax$$ = 
+    0.05, $CellContext`epsNow$$ = 0.005, $CellContext`k$$ = 4, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`Emod$$], 70000, 
+       Style["Young's modulus E (MPa)", 12]}, 1000, 250000, ControlType -> 
+      Manipulator}, {{
+       Hold[$CellContext`epsD$$], 0.012, 
+       Style["damage initiation strain \[Epsilon]d", 12]}, 0.001, 0.04, 
+      ControlType -> Manipulator}, {{
+       Hold[$CellContext`epsF$$], 0.018, 
+       Style["failure strain \[Epsilon]f", 12]}, 0.002, 0.08, ControlType -> 
+      Manipulator}, {{
+       Hold[$CellContext`k$$], 4, 
+       Style["damage sharpness k", 12]}, 0.2, 20, ControlType -> 
+      Manipulator}, {{
+       Hold[$CellContext`epsNow$$], 0.005, 
+       Style["current strain \[Epsilon]", 12]}, 0, 0.08, ControlType -> 
+      Manipulator}, {{
+       Hold[$CellContext`epsMax$$], 0.05, 
+       Style["max plotted strain", 12]}, 0.01, 0.12, ControlType -> 
+      Manipulator}}, Typeset`size$$ = {
+    729., {277.7840294057449, 283.5159629994949}}, Typeset`update$$ = 0, 
+    Typeset`initDone$$, Typeset`skipInitDone$$ = True, 
+    Typeset`keyframeActionsQ$$ = False, Typeset`keyframeList$$ = {}}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`Emod$$ = 70000, $CellContext`epsD$$ = 
+        0.012, $CellContext`epsF$$ = 0.018, $CellContext`epsMax$$ = 
+        0.05, $CellContext`epsNow$$ = 0.005, $CellContext`k$$ = 4}, 
+      "ControllerVariables" :> {}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$, Typeset`keyframeActionsQ$$, 
+        Typeset`keyframeList$$}, "Body" :> 
+      Module[{$CellContext`epsD2$ = $CellContext`epsD$$, $CellContext`epsF2$ = 
+         Max[$CellContext`epsF$$, $CellContext`epsD$$ + 
+           0.0001], $CellContext`sigNow$}, $CellContext`sigNow$ = \
+$CellContext`stress[$CellContext`epsNow$$, $CellContext`Emod$$, \
+$CellContext`epsD2$, $CellContext`epsF2$, $CellContext`k$$]; Column[{
+           Plot[
+            $CellContext`stress[$CellContext`eps, $CellContext`Emod$$, \
+$CellContext`epsD2$, $CellContext`epsF2$, $CellContext`k$$], \
+{$CellContext`eps, 0, $CellContext`epsMax$$}, PlotRange -> {0, All}, 
+            AxesLabel -> {"Strain \[Epsilon]", "Stress \[Sigma]"}, LabelStyle -> 
+            Directive[Bold, 15], PlotLabel -> 
+            "Same-Axis Elastic-Damage Stress-Strain Curve", LabelStyle -> 
+            Directive[Bold, 15], 
+            GridLines -> {{$CellContext`epsD2$, $CellContext`epsF2$}, None}, 
+            ImageSize -> 9^3, Epilog -> {Red, 
+              PointSize[0.02], 
+              Point[{$CellContext`epsNow$$, $CellContext`sigNow$}], Green, 
+              Dashed, 
+              
+              Line[{{$CellContext`epsD2$, 
+                 0}, {$CellContext`epsD2$, $CellContext`Emod$$ \
+$CellContext`epsD2$}}], Red, Dashed, 
+              
+              Line[{{$CellContext`epsF2$, 
+                 0}, {$CellContext`epsF2$, $CellContext`Emod$$ \
+$CellContext`epsD2$}}]}], 
+           Grid[{{
+              Style["Current strain \[Epsilon]", 12], 
+              Style[
+               NumberForm[$CellContext`epsNow$$, {5, 4}], 12]}, {
+              Style["Current stress \[Sigma]", 12], 
+              Style[
+               NumberForm[$CellContext`sigNow$, {7, 2}], 12], 
+              Style["MPa", 12]}, {
+              Style["Damage initiation strain \[Epsilon]d", 12], 
+              Style[
+               NumberForm[$CellContext`epsD2$, {5, 4}], 12]}, {
+              Style["Failure strain \[Epsilon]f", 12], 
+              Style[
+               NumberForm[$CellContext`epsF2$, {5, 4}], 12]}, {
+              Style["Damage sharpness k", 12], 
+              Style[
+               NumberForm[$CellContext`k$$, {5, 2}], 12]}}, ItemSize -> 
+            Automatic, Frame -> All]}]], 
+      "Specifications" :> {{{$CellContext`Emod$$, 70000, 
+          Style["Young's modulus E (MPa)", 12]}, 1000, 250000, ImageSize -> 
+         250}, {{$CellContext`epsD$$, 0.012, 
+          Style["damage initiation strain \[Epsilon]d", 12]}, 0.001, 0.04, 
+         ImageSize -> 250}, {{$CellContext`epsF$$, 0.018, 
+          Style["failure strain \[Epsilon]f", 12]}, 0.002, 0.08, ImageSize -> 
+         250}, {{$CellContext`k$$, 4, 
+          Style["damage sharpness k", 12]}, 0.2, 20, ImageSize -> 
+         250}, {{$CellContext`epsNow$$, 0.005, 
+          Style["current strain \[Epsilon]", 12]}, 0, 0.08, ImageSize -> 
+         250}, {{$CellContext`epsMax$$, 0.05, 
+          Style["max plotted strain", 12]}, 0.01, 0.12, ImageSize -> 250}}, 
+      "Options" :> {ControlPlacement -> Right}, "DefaultOptions" :> {}],
+     ImageSizeCache->{1193.09232421875, {308.554454820784, 314.286388414534}},
+     
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{3.991145064667823*^9},
+ CellLabel->
+  "Out[1739]=",ExpressionUUID->"66f129cd-479d-4e19-a5ed-b1bc1674a28f"]
+}, Open  ]]
+},
+WindowSize->{Full, Full},
+WindowMargins->{{28, Automatic}, {Automatic, 36}},
+FrontEndVersion->"14.3 for Mac OS X ARM (64-bit) (July 8, 2025)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"3a95f37d-112b-4680-8a19-dfa1db1c5bc9"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[576, 22, 11931, 294, 846, "Input",ExpressionUUID->"b8951f63-3ffa-406a-ae07-8f36c357493b"],
+Cell[12510, 318, 5745, 113, 672, "Output",ExpressionUUID->"66f129cd-479d-4e19-a5ed-b1bc1674a28f"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
